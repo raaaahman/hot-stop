@@ -1,5 +1,5 @@
-import { Game } from "phaser";
-import GameScene from "./scenes/GameScene";
+import { Game } from 'phaser'
+import GameScene from './scenes/GameScene'
 
 const game = new Game({
   parent: 'game',
