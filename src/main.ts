@@ -1,5 +1,11 @@
 import { Game } from 'phaser'
+import { configure } from 'mobx'
+
 import GameScene from './scenes/GameScene'
+
+configure({
+  enforceActions: 'never'
+})
 
 const game = new Game({
   parent: 'game',

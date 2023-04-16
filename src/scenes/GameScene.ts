@@ -1,4 +1,6 @@
 import { Scene } from 'phaser'
+import { action, autorun, makeObservable, observable } from 'mobx'
+
 import { MAP_ROAD_360, SPRITE_GIRL_DARK, TILEMAP_ROAD_360 } from '../resources'
 
 export default class GameScene extends Scene {
@@ -11,10 +13,21 @@ export default class GameScene extends Scene {
   create () {
     this.add.image(this.scale.width / 2, this.scale.height / 2, MAP_ROAD_360)
 
+    const eventStore = makeObservable(
+      this.add.timeline([]),
+      {
+        events: observable,
+        add: action
+      }
+    )
+
+    const disposeEventsUpdate = autorun(() => {
+      console.log(eventStore.events.length, eventStore.events.map(event => event.target.name))
+    })
+
     const zones = this.add.group()
     const objectsLayer = this.cache.json.get(TILEMAP_ROAD_360).layers.find((layer: Phaser.Tilemaps.TilemapLayer) => layer.name === 'rooms') as Phaser.Tilemaps.ObjectLayer
     objectsLayer.objects.forEach(obj => {
-      console.log(obj.name, obj.x, obj.y, obj.width, obj.height)
       if (obj.x && obj.y && obj.width && obj.height) {
         zones.add(
           this.add.zone(obj.x, obj.y, obj.width, obj.height)
@@ -45,7 +58,11 @@ export default class GameScene extends Scene {
       pointer: Phaser.Input.Pointer,
       gameObject: Phaser.GameObjects.GameObject,
       dropZone: Phaser.GameObjects.Zone) => {
-      console.log('drop in', dropZone.name)
+      eventStore.add({
+        once: true,
+        at: this.scene.scene.time.now + 450,
+        target: dropZone
+      })
     })
 
     this.add.image(36 * 32, 24 * 32, SPRITE_GIRL_DARK, 0)
@@ -61,5 +78,7 @@ export default class GameScene extends Scene {
         self.setX(dragX)
         self.setY(dragY)
       })
+
+    eventStore.play()
   }
 }

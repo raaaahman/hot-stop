@@ -29,9 +29,13 @@
     "vite": "^4.1.0"
   },
   "dependencies": {
+    "mobx": "^6.9.0",
     "phaser": "^3.60.0"
   },
   "lint-staged": {
-    "*.[jt]sx?": ["eslint --fix", "prettier --write"]
+    "*.[jt]sx?": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
