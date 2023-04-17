@@ -30,10 +30,11 @@
   },
   "dependencies": {
     "mobx": "^6.9.0",
-    "phaser": "^3.60.0"
+    "phaser": "^3.60.0",
+    "zod": "^3.21.4"
   },
   "lint-staged": {
-    "*.[jt]sx?": [
+    "*.(js|ts)x?": [
       "eslint --fix",
       "prettier --write"
     ]

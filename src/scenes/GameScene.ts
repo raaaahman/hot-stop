@@ -1,7 +1,8 @@
 import { Scene } from 'phaser'
-import { action, autorun, makeObservable, observable } from 'mobx'
+import { action, autorun, extendObservable, makeAutoObservable, makeObservable, observable, runInAction } from 'mobx'
 
 import { MAP_ROAD_360, SPRITE_GIRL_DARK, TILEMAP_ROAD_360 } from '../resources'
+import BuildingStore from '../store/Building/BuildingStore'
 
 export default class GameScene extends Scene {
   preload () {
@@ -25,17 +26,39 @@ export default class GameScene extends Scene {
       console.log(eventStore.events.length, eventStore.events.map(event => event.target.name))
     })
 
+    const buildingStore = BuildingStore.createFromObjects(this.cache.json.get(TILEMAP_ROAD_360).layers.find((layer: Phaser.Tilemaps.TilemapLayer) => layer.name === 'rooms'))
+
     const zones = this.add.group()
-    const objectsLayer = this.cache.json.get(TILEMAP_ROAD_360).layers.find((layer: Phaser.Tilemaps.TilemapLayer) => layer.name === 'rooms') as Phaser.Tilemaps.ObjectLayer
-    objectsLayer.objects.forEach(obj => {
-      if (obj.x && obj.y && obj.width && obj.height) {
-        zones.add(
-          this.add.zone(obj.x, obj.y, obj.width, obj.height)
-            .setOrigin(0)
-            .setRectangleDropZone(obj.width, obj.height)
-            .setName(obj.name)
-        )
+    buildingStore.buildings.forEach(
+      obj => {
+        const zone = this.add.rectangle(
+          obj.boundingRectangle.x,
+          obj.boundingRectangle.y,
+          obj.boundingRectangle.width,
+          obj.boundingRectangle.height,
+          0x000000)
+          .setOrigin(0)
+          .setInteractive({ dropZone: true })
+          .setName(obj.name)
+
+        zones.add(zone)
       }
+    )
+
+    autorun(() => {
+      buildingStore.buildings.forEach(
+        building => {
+          const zone = zones.getChildren().find(zone => zone.name === building.name) as Phaser.GameObjects.Rectangle
+          if (building.isAvailable) {
+            zone.setInteractive()
+            zone.setAlpha(0.01)
+          } else {
+            console.log('disable')
+            zone.disableInteractive()
+            zone.setAlpha(0.3)
+          }
+        }
+      )
     })
 
     this.input.on(Phaser.Input.Events.DRAG_ENTER, (
@@ -58,10 +81,12 @@ export default class GameScene extends Scene {
       pointer: Phaser.Input.Pointer,
       gameObject: Phaser.GameObjects.GameObject,
       dropZone: Phaser.GameObjects.Zone) => {
+      buildingStore.buildings.find(building => building.name === dropZone.name)?.setAvailable(false)
       eventStore.add({
         once: true,
         at: this.scene.scene.time.now + 450,
-        target: dropZone
+        target: dropZone,
+        run: () => buildingStore.buildings.find(building => building.name === dropZone.name)?.setAvailable(true)
       })
     })
 

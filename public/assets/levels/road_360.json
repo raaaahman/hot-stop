@@ -134,6 +134,12 @@
                  "height":160,
                  "id":1,
                  "name":"bedroom1",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"bedroom",
                  "visible":true,
@@ -145,6 +151,12 @@
                  "height":160,
                  "id":2,
                  "name":"bedroom2",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"bedroom",
                  "visible":true,
@@ -156,6 +168,12 @@
                  "height":160,
                  "id":3,
                  "name":"bedroom3",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"bedroom",
                  "visible":true,
@@ -167,6 +185,12 @@
                  "height":160,
                  "id":4,
                  "name":"kitchen",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"kitchen",
                  "visible":true,
@@ -178,6 +202,12 @@
                  "height":64,
                  "id":5,
                  "name":"table1",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"table",
                  "visible":true,
@@ -189,6 +219,12 @@
                  "height":64,
                  "id":6,
                  "name":"table2",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"table",
                  "visible":true,
@@ -200,6 +236,12 @@
                  "height":60,
                  "id":7,
                  "name":"table3",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"table",
                  "visible":true,
@@ -211,6 +253,12 @@
                  "height":60,
                  "id":8,
                  "name":"table4",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"table",
                  "visible":true,
@@ -222,6 +270,12 @@
                  "height":64,
                  "id":10,
                  "name":"car1",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"rubble",
                  "visible":true,
@@ -233,6 +287,12 @@
                  "height":64,
                  "id":11,
                  "name":"car2",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"rubble",
                  "visible":true,
@@ -244,6 +304,12 @@
                  "height":64,
                  "id":12,
                  "name":"car3",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"rubble",
                  "visible":true,
@@ -255,6 +321,12 @@
                  "height":32,
                  "id":13,
                  "name":"wallNorth",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -266,6 +338,12 @@
                  "height":32,
                  "id":14,
                  "name":"wallSouth",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"wall",
                  "visible":true,
@@ -277,6 +355,12 @@
                  "height":704,
                  "id":16,
                  "name":"wallWest",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"wall",
                  "visible":true,
@@ -288,6 +372,12 @@
                  "height":704,
                  "id":17,
                  "name":"wallEast",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
                  "rotation":0,
                  "type":"wall",
                  "visible":true,
@@ -299,6 +389,12 @@
                  "height":96,
                  "id":19,
                  "name":"counter",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":false
+                        }],
                  "rotation":0,
                  "type":"counter",
                  "visible":true,
@@ -321,7 +417,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/..\/dev\/OpenPixels.tsx"
+         "source":"..\/..\/..\/dev\/OpenPixels.tsx"
         }],
  "tilewidth":32,
  "type":"map",
