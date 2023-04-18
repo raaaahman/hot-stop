@@ -1,10 +1,11 @@
 import { makeAutoObservable } from 'mobx'
 
+import Building from '../building/Building'
+
 export default class Character {
   constructor(
     private _id: number,
-    private x: number,
-    private y: number,
+    public location: Building,
     private _spriteKey: string
   ) {
     makeAutoObservable(this)
@@ -12,15 +13,6 @@ export default class Character {
 
   get id() {
     return this._id
-  }
-
-  get position() {
-    return { x: this.x, y: this.y }
-  }
-
-  set position(newPosition: { x: number; y: number }) {
-    this.x = newPosition.x
-    this.y = newPosition.y
   }
 
   get spriteKey() {

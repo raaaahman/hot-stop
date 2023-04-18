@@ -98,9 +98,10 @@ export default class GameScene extends Scene {
           (character) => gameObject.name === 'character-' + character.id
         )
         if (character && building) {
+          character.location = building
           store.timeline.add({
             once: true,
-            at: this.scene.scene.time.now + 450,
+            at: store.timeline.elapsed + 450,
             target: dropZone,
             run: () => {
               building?.setAvailable(true)
@@ -108,40 +109,24 @@ export default class GameScene extends Scene {
                 (building) => building.name === 'counter'
               )
               if (counterBuilding) {
-                character.position = {
-                  x:
-                    counterBuilding.boundingRectangle.x +
-                    gameObject.width * gameObject.originX,
-                  y:
-                    counterBuilding.boundingRectangle.y +
-                    gameObject.width * gameObject.originY,
-                }
+                character.location = counterBuilding
               }
             },
           })
-
-          character.position = {
-            x:
-              building.boundingRectangle.x +
-              gameObject.width * gameObject.originX,
-            y:
-              building.boundingRectangle.y +
-              gameObject.height * gameObject.originY,
-          }
         }
       }
     )
 
-    store.characters.push(new Character(0, 34 * 32, 24 * 32, SPRITE_GIRL_DARK))
+    const counter = store.buildings.find(
+      (building) => building.name === 'counter'
+    )
+    if (counter) {
+      store.characters.push(new Character(0, counter, SPRITE_GIRL_DARK))
+    }
 
     store.characters.forEach((character) => {
       const sprite = this.add
-        .image(
-          character.position.x,
-          character.position.y,
-          character.spriteKey,
-          0
-        )
+        .image(0, 0, character.spriteKey, 0)
         .setName('character-' + character.id)
         .setInteractive({
           draggable: true,
@@ -160,8 +145,8 @@ export default class GameScene extends Scene {
         )
 
       autorun(() => {
-        sprite.setX(character.position.x)
-        sprite.setY(character.position.y)
+        sprite.setX(character.location.boundingRectangle.x + sprite.width / 2)
+        sprite.setY(character.location.boundingRectangle.y + sprite.height / 2)
       })
     })
 
