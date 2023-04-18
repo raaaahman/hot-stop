@@ -3,6 +3,7 @@ import { action, autorun, makeObservable, observable } from 'mobx'
 
 import { MAP_ROAD_360, SPRITE_GIRL_DARK, TILEMAP_ROAD_360 } from '../resources'
 import BuildingStore from '../store/Building/BuildingStore'
+import Character from '../store/character/Character'
 
 export default class GameScene extends Scene {
   preload() {
@@ -39,6 +40,7 @@ export default class GameScene extends Scene {
 
     const zones = this.add.group()
     buildingStore.buildings.forEach((obj) => {
+      console.log(obj.name)
       const zone = this.add
         .rectangle(
           obj.boundingRectangle.x,
@@ -89,37 +91,86 @@ export default class GameScene extends Scene {
       Phaser.Input.Events.DROP,
       (
         pointer: Phaser.Input.Pointer,
-        gameObject: Phaser.GameObjects.GameObject,
+        gameObject: Phaser.GameObjects.Image,
         dropZone: Phaser.GameObjects.Zone
       ) => {
-        buildingStore.buildings
-          .find((building) => building.name === dropZone.name)
-          ?.setAvailable(false)
-        eventStore.add({
-          once: true,
-          at: this.scene.scene.time.now + 450,
-          target: dropZone,
-          run: () =>
-            buildingStore.buildings
-              .find((building) => building.name === dropZone.name)
-              ?.setAvailable(true),
-        })
+        const building = buildingStore.buildings.find(
+          (building) => building.name === dropZone.name
+        )
+        building?.setAvailable(false)
+
+        const character = characterStore.find(
+          (character) => gameObject.name === 'character-' + character.id
+        )
+        if (character && building) {
+          eventStore.add({
+            once: true,
+            at: this.scene.scene.time.now + 450,
+            target: dropZone,
+            run: () => {
+              building?.setAvailable(true)
+              const counterBuilding = buildingStore.buildings.find(
+                (building) => building.name === 'counter'
+              )
+              if (counterBuilding) {
+                character.position = {
+                  x:
+                    counterBuilding.boundingRectangle.x +
+                    gameObject.width * gameObject.originX,
+                  y:
+                    counterBuilding.boundingRectangle.y +
+                    gameObject.width * gameObject.originY,
+                }
+              }
+            },
+          })
+
+          character.position = {
+            x:
+              building.boundingRectangle.x +
+              gameObject.width * gameObject.originX,
+            y:
+              building.boundingRectangle.y +
+              gameObject.height * gameObject.originY,
+          }
+        }
       }
     )
 
-    this.add
-      .image(36 * 32, 24 * 32, SPRITE_GIRL_DARK, 0)
-      .setInteractive({
-        draggable: true,
+    const characterStore = observable<Character>([
+      new Character(0, 34 * 32, 24 * 32, SPRITE_GIRL_DARK),
+    ])
+
+    characterStore.forEach((character) => {
+      const sprite = this.add
+        .image(
+          character.position.x,
+          character.position.y,
+          character.spriteKey,
+          0
+        )
+        .setName('character-' + character.id)
+        .setInteractive({
+          draggable: true,
+        })
+        .on(
+          Phaser.Input.Events.DRAG,
+          function (
+            pointer: Phaser.Input.Pointer,
+            dragX: number,
+            dragY: number
+          ) {
+            const self = this as Phaser.GameObjects.Image
+            self.setX(dragX)
+            self.setY(dragY)
+          }
+        )
+
+      autorun(() => {
+        sprite.setX(character.position.x)
+        sprite.setY(character.position.y)
       })
-      .on(
-        Phaser.Input.Events.DRAG,
-        function (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) {
-          const self = this as Phaser.GameObjects.Image
-          self.setX(dragX)
-          self.setY(dragY)
-        }
-      )
+    })
 
     eventStore.play()
   }

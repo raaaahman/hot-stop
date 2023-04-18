@@ -2,10 +2,11 @@ import { z } from 'zod'
 
 export const BuildingTypeSchema = z.enum([
   'rubble',
+  'counter',
   'table',
   'kitchen',
   'bedroom',
-  'wall'
+  'wall',
 ])
 
 export type BuildingType = z.infer<typeof BuildingTypeSchema>
@@ -21,11 +22,13 @@ const BuildingSchema = z.object({
   y: z.number().int(),
   width: z.number().int(),
   height: z.number().int(),
-  properties: z.array(z.object({
-    name: BuildingPropertySchema,
-    type: z.string(),
-    value: z.any()
-  }))
+  properties: z.array(
+    z.object({
+      name: BuildingPropertySchema,
+      type: z.string(),
+      value: z.any(),
+    })
+  ),
 })
 
 export default BuildingSchema
