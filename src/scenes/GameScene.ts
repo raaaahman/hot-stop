@@ -89,31 +89,7 @@ export default class GameScene extends Scene {
         gameObject: Phaser.GameObjects.Image,
         dropZone: Phaser.GameObjects.Zone
       ) => {
-        const building = store.buildings.find(
-          (building) => building.name === dropZone.name
-        )
-        building?.setAvailable(false)
-
-        const character = store.characters.find(
-          (character) => gameObject.name === 'character-' + character.id
-        )
-        if (character && building) {
-          character.location = building
-          store.timeline.add({
-            once: true,
-            at: store.timeline.elapsed + 450,
-            target: dropZone,
-            run: () => {
-              building?.setAvailable(true)
-              const counterBuilding = store.buildings.find(
-                (building) => building.name === 'counter'
-              )
-              if (counterBuilding) {
-                character.location = counterBuilding
-              }
-            },
-          })
-        }
+        store.assign(dropZone, gameObject)
       }
     )
 
