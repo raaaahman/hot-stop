@@ -1,9 +1,9 @@
 import { Scene } from 'phaser'
-import { action, autorun, makeObservable, observable } from 'mobx'
+import { autorun } from 'mobx'
 
 import { MAP_ROAD_360, SPRITE_GIRL_DARK, TILEMAP_ROAD_360 } from '../resources'
-import BuildingStore from '../store/Building/BuildingStore'
 import Character from '../store/character/Character'
+import RootStore from '../store/RootStore'
 
 export default class GameScene extends Scene {
   preload() {
@@ -16,30 +16,25 @@ export default class GameScene extends Scene {
   }
 
   create() {
-    this.add.image(this.scale.width / 2, this.scale.height / 2, MAP_ROAD_360)
-
-    const eventStore = makeObservable(this.add.timeline([]), {
-      events: observable,
-      add: action,
-    })
-
-    const disposeEventsUpdate = autorun(() => {
-      console.log(
-        eventStore.events.length,
-        eventStore.events.map((event) => event.target.name)
-      )
-    })
-
-    const buildingStore = BuildingStore.createFromObjects(
+    const store = new RootStore(
+      this.add.timeline([]),
       this.cache.json
         .get(TILEMAP_ROAD_360)
         .layers.find(
           (layer: Phaser.Tilemaps.TilemapLayer) => layer.name === 'rooms'
         )
     )
+    this.add.image(this.scale.width / 2, this.scale.height / 2, MAP_ROAD_360)
+
+    const disposeEventsUpdate = autorun(() => {
+      console.log(
+        store.timeline.events.length,
+        store.timeline.events.map((event) => event.target.name)
+      )
+    })
 
     const zones = this.add.group()
-    buildingStore.buildings.forEach((obj) => {
+    store.buildings.forEach((obj) => {
       console.log(obj.name)
       const zone = this.add
         .rectangle(
@@ -94,22 +89,22 @@ export default class GameScene extends Scene {
         gameObject: Phaser.GameObjects.Image,
         dropZone: Phaser.GameObjects.Zone
       ) => {
-        const building = buildingStore.buildings.find(
+        const building = store.buildings.find(
           (building) => building.name === dropZone.name
         )
         building?.setAvailable(false)
 
-        const character = characterStore.find(
+        const character = store.characters.find(
           (character) => gameObject.name === 'character-' + character.id
         )
         if (character && building) {
-          eventStore.add({
+          store.timeline.add({
             once: true,
             at: this.scene.scene.time.now + 450,
             target: dropZone,
             run: () => {
               building?.setAvailable(true)
-              const counterBuilding = buildingStore.buildings.find(
+              const counterBuilding = store.buildings.find(
                 (building) => building.name === 'counter'
               )
               if (counterBuilding) {
@@ -137,11 +132,9 @@ export default class GameScene extends Scene {
       }
     )
 
-    const characterStore = observable<Character>([
-      new Character(0, 34 * 32, 24 * 32, SPRITE_GIRL_DARK),
-    ])
+    store.characters.push(new Character(0, 34 * 32, 24 * 32, SPRITE_GIRL_DARK))
 
-    characterStore.forEach((character) => {
+    store.characters.forEach((character) => {
       const sprite = this.add
         .image(
           character.position.x,
@@ -172,6 +165,6 @@ export default class GameScene extends Scene {
       })
     })
 
-    eventStore.play()
+    store.timeline.play()
   }
 }
