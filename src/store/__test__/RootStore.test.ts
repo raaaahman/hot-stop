@@ -11,8 +11,9 @@ import TEST_DATA from './data.json'
 vi.mock('phaser/src/time/Timeline.js', () => ({
   default: class {
     events: object[] = []
-
-    add = vi.fn()
+    add() {
+      // Do nothing
+    }
   },
 }))
 
@@ -36,10 +37,28 @@ describe('The RootStore', () => {
       const kitchen = store.buildings.find(
         (building) => building.name === 'kitchen'
       )
-
       expect(store.characters).toEqual([
         expect.objectContaining({ id: 0, location: kitchen }),
       ])
+    })
+
+    it('should make building with the assigned unavailable', () => {
+      store.assign('kitchen', 0)
+
+      expect(store.buildings).toContainEqual(
+        expect.objectContaining({ name: 'kitchen', isAvailable: false })
+      )
+    })
+
+    it('should add an event to the timeline', () => {
+      vi.spyOn(store.timeline, 'add')
+      store.assign('kitchen', 0)
+
+      expect(store.timeline.add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          target: 'kitchen',
+        })
+      )
     })
   })
 })
