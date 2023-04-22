@@ -1,0 +1,42 @@
+{
+  "name": "rooms",
+  "objects": [
+    {
+      "id": 0,
+      "x": 128,
+      "y": 96,
+      "width": 256,
+      "height": 96,
+      "name": "counter",
+      "type": "counter",
+      "properties": [
+        {
+          "name": "available",
+          "type": "boolean",
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "x": 256,
+      "y": 320,
+      "width": 256,
+      "height": 128,
+      "name": "kitchen",
+      "type": "kitchen",
+      "properties": [
+        {
+          "name": "available",
+          "type": "boolean",
+          "value": true
+        }
+      ]
+    }
+  ],
+  "opacity": 1,
+  "properties": [],
+  "propertyTypes": [],
+  "type": "object",
+  "visible": true
+}

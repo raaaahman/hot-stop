@@ -20,24 +20,21 @@ export default class RootStore {
     this.characters = observable<Character>([])
   }
 
-  assign(
-    dropZone: Phaser.GameObjects.Zone,
-    gameObject: Phaser.GameObjects.Image
-  ) {
+  assign(buildingName: string, characterId: number) {
     const building = this.buildings.find(
-      (building) => building.name === dropZone.name
+      (building) => building.name === buildingName
     )
     building?.setAvailable(false)
 
     const character = this.characters.find(
-      (character) => gameObject.name === 'character-' + character.id
+      (character) => characterId === character.id
     )
     if (character && building) {
       character.location = building
       this.timeline.add({
         once: true,
         at: this.timeline.elapsed + 450,
-        target: dropZone,
+        target: buildingName,
         run: () => {
           building?.setAvailable(true)
           const counterBuilding = this.buildings.find(

@@ -89,7 +89,10 @@ export default class GameScene extends Scene {
         gameObject: Phaser.GameObjects.Image,
         dropZone: Phaser.GameObjects.Zone
       ) => {
-        store.assign(dropZone, gameObject)
+        const characterIdMatch = gameObject.name.match(/character-(\d+)/)
+        if (characterIdMatch) {
+          store.assign(dropZone.name, Number(characterIdMatch[1]))
+        }
       }
     )
 
