@@ -51,4 +51,17 @@ export default class Building {
   setAvailable(value = true) {
     this.available = value
   }
+
+  createTask(elapsed: number) {
+    return {
+      target: this._name,
+      at: elapsed,
+      once: true,
+      run: this.onComplete,
+    }
+  }
+
+  onComplete() {
+    this.available = true
+  }
 }
