@@ -1,4 +1,10 @@
-import { makeAutoObservable } from 'mobx'
+import {
+  action,
+  computed,
+  makeAutoObservable,
+  makeObservable,
+  observable,
+} from 'mobx'
 import BuildingSchema, { BuildingData, BuildingType } from './BuildingSchema'
 
 export default class Building {
@@ -28,7 +34,12 @@ export default class Building {
     private height: number,
     public available = true
   ) {
-    makeAutoObservable(this)
+    makeObservable(this, {
+      available: observable,
+      isAvailable: computed,
+      setAvailable: action,
+      onComplete: action,
+    })
   }
 
   get name() {
@@ -52,10 +63,10 @@ export default class Building {
     this.available = value
   }
 
-  createTask(elapsed: number) {
+  createTask(end: number) {
     return {
       target: this._name,
-      at: elapsed,
+      at: end,
       once: true,
       run: this.onComplete,
     }
