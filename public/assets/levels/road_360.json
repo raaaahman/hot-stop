@@ -199,7 +199,7 @@
                  "y":160
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":5,
                  "name":"table1",
                  "properties":[
@@ -216,7 +216,7 @@
                  "y":512
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":6,
                  "name":"table2",
                  "properties":[
@@ -233,7 +233,7 @@
                  "y":512
                 }, 
                 {
-                 "height":60,
+                 "height":96,
                  "id":7,
                  "name":"table3",
                  "properties":[
@@ -250,7 +250,7 @@
                  "y":608
                 }, 
                 {
-                 "height":60,
+                 "height":96,
                  "id":8,
                  "name":"table4",
                  "properties":[
@@ -267,7 +267,7 @@
                  "y":608
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":10,
                  "name":"car1",
                  "properties":[
@@ -275,6 +275,16 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"duration",
+                         "type":"int",
+                         "value":12000
+                        }, 
+                        {
+                         "name":"reward",
+                         "type":"string",
+                         "value":"{ \"scraps\": 150 }"
                         }],
                  "rotation":0,
                  "type":"rubble",
@@ -284,7 +294,7 @@
                  "y":480
                 }, 
                 {
-                 "height":64,
+                 "height":96,
                  "id":11,
                  "name":"car2",
                  "properties":[
@@ -292,6 +302,21 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"duration",
+                         "type":"int",
+                         "value":24000
+                        }, 
+                        {
+                         "name":"next",
+                         "type":"object",
+                         "value":21
+                        }, 
+                        {
+                         "name":"reward",
+                         "type":"string",
+                         "value":"{ \"scraps\": 50 }"
                         }],
                  "rotation":0,
                  "type":"rubble",
@@ -301,7 +326,24 @@
                  "y":480
                 }, 
                 {
-                 "height":64,
+                 "height":96,
+                 "id":21,
+                 "name":"pickup",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":false
+                        }],
+                 "rotation":0,
+                 "type":"vehicle",
+                 "visible":true,
+                 "width":96,
+                 "x":1056,
+                 "y":480
+                }, 
+                {
+                 "height":96,
                  "id":12,
                  "name":"car3",
                  "properties":[
@@ -309,6 +351,16 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
+                        }, 
+                        {
+                         "name":"duration",
+                         "type":"int",
+                         "value":18000
+                        }, 
+                        {
+                         "name":"reward",
+                         "type":"string",
+                         "value":"{ \"scraps\": 200 }"
                         }],
                  "rotation":0,
                  "type":"rubble",
@@ -347,7 +399,7 @@
                  "rotation":0,
                  "type":"wall",
                  "visible":true,
-                 "width":1024,
+                 "width":832,
                  "x":128,
                  "y":800
                 }, 
@@ -401,6 +453,23 @@
                  "width":224,
                  "x":224,
                  "y":384
+                }, 
+                {
+                 "height":32,
+                 "id":20,
+                 "name":"door",
+                 "properties":[
+                        {
+                         "name":"available",
+                         "type":"bool",
+                         "value":true
+                        }],
+                 "rotation":0,
+                 "type":"wall",
+                 "visible":true,
+                 "width":192,
+                 "x":960,
+                 "y":800
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -409,7 +478,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":20,
+ "nextobjectid":22,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.1",
