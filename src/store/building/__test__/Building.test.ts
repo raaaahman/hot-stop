@@ -1,17 +1,27 @@
 import { describe, it, expect } from 'vitest'
 
 import Building from '../Building'
-import TEST_DATA from '../../__test__/data.json'
+import { createFromObjects } from '../factories'
+import TEST_DATA from '../../../../public/assets/levels/road_360.json'
 
 describe('The Building domain object', () => {
   it('should create an array of instances from Tiled Object Layer data', () => {
-    const buildings = Building.createFromObjects(TEST_DATA)
+    const buildings = createFromObjects(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      TEST_DATA.layers.find((layer) => layer.name === 'rooms')
+    )
 
-    expect(buildings.length).toBe(2)
-    expect(buildings).toEqual([
-      expect.objectContaining({ name: 'counter', type: 'counter' }),
-      expect.objectContaining({ name: 'kitchen', type: 'kitchen' }),
-    ])
+    expect(buildings.length).toBe(15)
+    expect(buildings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: 'counter', type: 'counter' }),
+        expect.objectContaining({ name: 'kitchen', type: 'kitchen' }),
+        expect.objectContaining({ name: 'bedroom1', type: 'bedroom' }),
+        expect.objectContaining({ name: 'bedroom2', type: 'bedroom' }),
+        expect.objectContaining({ name: 'bedroom3', type: 'bedroom' }),
+      ])
+    )
   })
 
   describe('the createTask method', () => {

@@ -11,7 +11,11 @@ export const BuildingTypeSchema = z.enum([
 
 export type BuildingType = z.infer<typeof BuildingTypeSchema>
 
-export const BuildingPropertySchema = z.enum(['available'])
+export const BuildingPropertySchema = z.enum([
+  'available',
+  'duration',
+  'reward',
+])
 
 export type BuildingCustomProperty = z.infer<typeof BuildingPropertySchema>
 

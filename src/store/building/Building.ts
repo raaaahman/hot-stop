@@ -1,30 +1,8 @@
-import {
-  action,
-  computed,
-  makeAutoObservable,
-  makeObservable,
-  observable,
-} from 'mobx'
-import BuildingSchema, { BuildingData, BuildingType } from './BuildingSchema'
+import { action, computed, makeObservable, observable } from 'mobx'
+
+import { BuildingType } from './BuildingSchema'
 
 export default class Building {
-  static createFromObjects(objectLayer: Phaser.Tilemaps.ObjectLayer) {
-    return objectLayer.objects
-      .filter((obj) => BuildingSchema.safeParse(obj).success)
-      .map((obj) => Building.createFromData(obj as BuildingData))
-  }
-
-  static createFromData(data: BuildingData) {
-    return new Building(
-      data.name,
-      data.type,
-      data.x,
-      data.y,
-      data.width,
-      data.height
-    )
-  }
-
   constructor(
     private _name: string,
     private type: BuildingType,
@@ -74,5 +52,6 @@ export default class Building {
 
   onComplete() {
     this.available = true
+    return {}
   }
 }

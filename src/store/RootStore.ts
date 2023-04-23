@@ -2,11 +2,14 @@ import { action, makeObservable, observable } from 'mobx'
 
 import Building from './building/Building'
 import Character from './character/Character'
+import InventoryStore from './inventory/InventoryStore'
+import { createFromObjects } from './building/factories'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
   public buildings: Building[]
   public characters: Character[]
+  public inventory: InventoryStore
 
   constructor(
     timeline: Phaser.Time.Timeline,
@@ -16,8 +19,9 @@ export default class RootStore {
       events: observable,
       add: action,
     })
-    this.buildings = observable(Building.createFromObjects(objectLayer))
+    this.buildings = observable(createFromObjects(objectLayer))
     this.characters = observable<Character>([])
+    this.inventory = new InventoryStore()
   }
 
   assign(buildingName: string, characterId: number) {
@@ -36,7 +40,9 @@ export default class RootStore {
         at: this.timeline.elapsed + 450,
         target: buildingName,
         run: () => {
-          building?.setAvailable(true)
+          const reward = building.onComplete()
+          this.inventory.add(reward)
+          building.setAvailable(true)
           const counterBuilding = this.buildings.find(
             (building) => building.name === 'counter'
           )
