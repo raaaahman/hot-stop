@@ -1,17 +1,25 @@
 import { Scene } from 'phaser'
 import { autorun } from 'mobx'
 
-import { MAP_ROAD_360, SPRITE_GIRL_DARK, TILEMAP_ROAD_360 } from '../resources'
+import { MAP_ROAD_360, SPRITE_CHARACTER, TILEMAP_ROAD_360 } from '../resources'
 import Character from '../store/character/Character'
 import RootStore from '../store/RootStore'
 
 export default class GameScene extends Scene {
   preload() {
     this.load.image(MAP_ROAD_360, 'assets/img/road_360.png')
-    this.load.spritesheet(SPRITE_GIRL_DARK, 'assets/img/GirlDarkExample.png', {
-      frameWidth: 36,
-      frameHeight: 40,
-    })
+    SPRITE_CHARACTER.MALE.forEach((filename) =>
+      this.load.spritesheet(filename, `assets/img/${filename}.png`, {
+        frameWidth: 36,
+        frameHeight: 40,
+      })
+    )
+    SPRITE_CHARACTER.FEMALE.forEach((filename) =>
+      this.load.spritesheet(filename, `assets/img/${filename}.png`, {
+        frameWidth: 36,
+        frameHeight: 40,
+      })
+    )
     this.load.json(TILEMAP_ROAD_360, 'assets/levels/road_360.json')
   }
 
@@ -100,7 +108,7 @@ export default class GameScene extends Scene {
       (building) => building.name === 'counter'
     )
     if (counter) {
-      store.characters.push(new Character(0, counter, SPRITE_GIRL_DARK))
+      store.characters.push(Character.create(store.characters, counter))
     }
 
     store.characters.forEach((character) => {
