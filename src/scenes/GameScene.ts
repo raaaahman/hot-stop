@@ -3,7 +3,6 @@ import { autorun } from 'mobx'
 import { Chance } from 'chance'
 
 import { MAP_ROAD_360, SPRITE_CHARACTER, TILEMAP_ROAD_360 } from '../resources'
-import Character from '../store/character/Character'
 import RootStore from '../store/RootStore'
 
 export default class GameScene extends Scene {
@@ -126,14 +125,24 @@ export default class GameScene extends Scene {
             })
             .on(
               Phaser.Input.Events.DRAG,
-              function (
+              (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+                sprite.setX(dragX)
+                sprite.setY(dragY)
+              }
+            )
+            .on(
+              Phaser.Input.Events.GAMEOBJECT_POINTER_DOWN,
+              (
                 pointer: Phaser.Input.Pointer,
-                dragX: number,
-                dragY: number
-              ) {
-                const self = this as Phaser.GameObjects.Image
-                self.setX(dragX)
-                self.setY(dragY)
+                x: number,
+                y: number,
+                event: Phaser.Types.Input.EventData
+              ) => {
+                const character = store.characters.find(
+                  (character) => 'character-' + character.id === sprite.name
+                )
+                store.characters.selected = character
+                event.stopPropagation()
               }
             )
 
@@ -157,7 +166,7 @@ export default class GameScene extends Scene {
                   SPRITE_CHARACTER[gender].at(
                     chance.integer({
                       min: 0,
-                      max: SPRITE_CHARACTER[gender].length,
+                      max: SPRITE_CHARACTER[gender].length - 1,
                     })
                   ) as string
                 )
@@ -172,6 +181,35 @@ export default class GameScene extends Scene {
         }
       })
     })
+
+    const characterName = this.add
+      .text(1080, 40, '', { color: '#fff', fontStyle: 'bold' })
+      .setVisible(false)
+    const characterWants = this.add
+      .text(1080, 52, '', { color: '#fff' })
+      .setVisible(false)
+    autorun(() => {
+      if (store.characters.selected) {
+        characterName.text = store.characters.selected.name
+        characterName.setVisible(true)
+
+        characterWants.text = 'Wants: ' + store.characters.selected.wants
+        characterWants.setVisible(true)
+      } else {
+        characterName.text = ''
+        characterName.setVisible(false)
+
+        characterWants.text = ''
+        characterWants.setVisible(false)
+      }
+    })
+
+    this.input.on(
+      Phaser.Input.Events.POINTER_DOWN,
+      (pointer: Phaser.Input.Pointer) => {
+        store.characters.selected = undefined
+      }
+    )
 
     store.timeline.play()
   }
