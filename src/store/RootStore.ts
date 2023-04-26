@@ -5,11 +5,12 @@ import Character from './character/Character'
 import InventoryStore from './inventory/InventoryStore'
 import { createFromObjects } from './building/factories'
 import { Chance } from 'chance'
+import CharacterStore from './character/CharacterStore'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
   public buildings: Building[]
-  public characters: Character[]
+  public characters: CharacterStore
   public inventory: InventoryStore
 
   constructor(
@@ -21,7 +22,7 @@ export default class RootStore {
       add: action,
     })
     this.buildings = observable(createFromObjects(objectLayer))
-    this.characters = observable<Character>([])
+    this.characters = new CharacterStore()
     this.inventory = new InventoryStore()
 
     const chance = Chance()
@@ -48,6 +49,7 @@ export default class RootStore {
         once: true,
         target: character,
         run: () => {
+          character.location = undefined
           character.isActive = false
         },
       })
