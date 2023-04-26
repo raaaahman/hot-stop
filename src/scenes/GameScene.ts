@@ -1,5 +1,6 @@
 import { Scene } from 'phaser'
 import { autorun } from 'mobx'
+import { Chance } from 'chance'
 
 import { MAP_ROAD_360, SPRITE_CHARACTER, TILEMAP_ROAD_360 } from '../resources'
 import Character from '../store/character/Character'
@@ -24,6 +25,7 @@ export default class GameScene extends Scene {
   }
 
   create() {
+    const chance = new Chance()
     const store = new RootStore(
       this.add.timeline([]),
       this.cache.json
@@ -104,36 +106,70 @@ export default class GameScene extends Scene {
       }
     )
 
-    const counter = store.buildings.find(
-      (building) => building.name === 'counter'
-    )
-    if (counter) {
-      store.characters.push(Character.create(store.characters, counter))
-    }
+    const characterSprites = this.add.group({
+      classType: Phaser.GameObjects.Image,
+    })
 
-    store.characters.forEach((character) => {
-      const sprite = this.add
-        .image(0, 0, character.spriteKey, 0)
-        .setName('character-' + character.id)
-        .setInteractive({
-          draggable: true,
-        })
-        .on(
-          Phaser.Input.Events.DRAG,
-          function (
-            pointer: Phaser.Input.Pointer,
-            dragX: number,
-            dragY: number
-          ) {
-            const self = this as Phaser.GameObjects.Image
-            self.setX(dragX)
-            self.setY(dragY)
-          }
-        )
+    autorun(() => {
+      store.characters.forEach((character) => {
+        if (
+          characterSprites.getMatching('name', 'character-' + character.id)
+            .length === 0
+        ) {
+          const sprite = characterSprites.getFirstDead(
+            true
+          ) as Phaser.GameObjects.Image
+          sprite
+            .setName('character-' + character.id)
+            .setInteractive({
+              draggable: true,
+            })
+            .on(
+              Phaser.Input.Events.DRAG,
+              function (
+                pointer: Phaser.Input.Pointer,
+                dragX: number,
+                dragY: number
+              ) {
+                const self = this as Phaser.GameObjects.Image
+                self.setX(dragX)
+                self.setY(dragY)
+              }
+            )
 
-      autorun(() => {
-        sprite.setX(character.location.boundingRectangle.x + sprite.width / 2)
-        sprite.setY(character.location.boundingRectangle.y + sprite.height / 2)
+          autorun(() => {
+            sprite.setX(
+              (character.location?.boundingRectangle.x || -800) +
+                sprite.width / 2
+            )
+            sprite.setY(
+              (character.location?.boundingRectangle.y || -800) +
+                sprite.height / 2
+            )
+          })
+          autorun(() => {
+            if (character.isActive) {
+              const gender =
+                (character?.gender?.toUpperCase() as 'MALE' | 'FEMALE') ||
+                'MALE'
+              sprite
+                .setTexture(
+                  SPRITE_CHARACTER[gender].at(
+                    chance.integer({
+                      min: 0,
+                      max: SPRITE_CHARACTER[gender].length,
+                    })
+                  ) as string
+                )
+                .setX(-800)
+                .setY(-800)
+                .setActive(true)
+                .setVisible(true)
+            } else {
+              characterSprites.killAndHide(sprite)
+            }
+          })
+        }
       })
     })
 
