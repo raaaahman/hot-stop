@@ -5,7 +5,7 @@ import { BuildingType } from './BuildingSchema'
 export default class Building {
   constructor(
     private _name: string,
-    private type: BuildingType,
+    private _type: BuildingType,
     private x: number,
     private y: number,
     private width: number,
@@ -22,6 +22,10 @@ export default class Building {
 
   get name() {
     return this._name
+  }
+
+  get type() {
+    return this._type
   }
 
   get boundingRectangle() {
