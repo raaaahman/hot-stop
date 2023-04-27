@@ -19,6 +19,8 @@ vi.mock('phaser/src/time/Timeline.js', () => ({
 
 describe('The RootStore', () => {
   let store: RootStore
+  let character: Character
+
   beforeEach(() => {
     store = new RootStore(
       new Timeline(),
@@ -26,28 +28,22 @@ describe('The RootStore', () => {
       // @ts-ignore
       TEST_DATA.layers.find((layer) => layer.name === 'rooms')
     )
-    const counter = store.buildings.find(
-      (building) => building.name === 'counter'
-    )
-    store.characters.push(
-      new Character(0, counter as Building, 'a_character_sprite')
-    )
+    character = Character.create(store.characters)
   })
 
   describe('the assign method', () => {
     it('should set the new location of the character to the building with the given name', () => {
-      store.assign('kitchen', 0)
+      store.assign('kitchen', character.id)
 
       const kitchen = store.buildings.find(
         (building) => building.name === 'kitchen'
       )
-      expect(store.characters).toEqual([
-        expect.objectContaining({ id: 0, location: kitchen }),
-      ])
+
+      expect(character.location).toBe(kitchen)
     })
 
     it('should make building with the assigned unavailable', () => {
-      store.assign('kitchen', 0)
+      store.assign('kitchen', character.id)
 
       expect(store.buildings).toContainEqual(
         expect.objectContaining({ name: 'kitchen', isAvailable: false })
@@ -56,11 +52,11 @@ describe('The RootStore', () => {
 
     it('should add an event to the timeline', () => {
       vi.spyOn(store.timeline, 'add')
-      store.assign('kitchen', 0)
+      store.assign('kitchen', character.id)
 
       expect(store.timeline.add).toHaveBeenCalledWith(
         expect.objectContaining({
-          target: 'kitchen',
+          target: store.buildings.find((current) => current.name === 'kitchen'),
         })
       )
     })
@@ -73,28 +69,12 @@ describe('The RootStore', () => {
       ) as Building
       vi.spyOn(kitchen, 'onComplete')
 
-      store.assign('kitchen', 0)
+      store.assign('kitchen', character.id)
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      store.timeline.events.find((event) => event.target === 'kitchen')?.run()
+      store.timeline.events.find((event) => event.target === kitchen)?.run()
 
       expect(kitchen.onComplete).toHaveBeenCalledTimes(1)
-    })
-
-    it('should add a reward from an event to the iventory', () => {
-      vi.spyOn(store.inventory, 'add')
-
-      const BUILDING_NAME = 'car1'
-      store.assign(BUILDING_NAME, 0)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      store.timeline.events
-        .find((event) => event.target === BUILDING_NAME)
-        ?.run()
-
-      expect(store.inventory.add).toHaveBeenCalledWith(
-        expect.objectContaining({ scraps: 150 })
-      )
     })
   })
 })

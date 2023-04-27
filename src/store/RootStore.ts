@@ -24,7 +24,9 @@ export default class RootStore {
     this.buildings = observable(createFromObjects(objectLayer))
     this.characters = new CharacterStore()
     this.inventory = new InventoryStore()
+  }
 
+  public init() {
     const chance = Chance()
     const events = []
     for (let i = 0; i < chance.integer({ min: 12, max: 16 }); i++) {
@@ -39,18 +41,18 @@ export default class RootStore {
         at: spawnTime,
         once: true,
         target: character,
-        run: () => {
-          character.location = building
+        set: {
+          location: building,
         },
       })
 
       events.push({
-        at: spawnTime + chance.integer({ min: 10, max: 30 }) * 1000,
+        from: chance.integer({ min: 10, max: 30 }) * 1000,
         once: true,
         target: character,
-        run: () => {
-          character.location = undefined
-          character.isActive = false
+        set: {
+          location: building,
+          isActive: true,
         },
       })
     }
@@ -71,7 +73,7 @@ export default class RootStore {
       this.timeline.add({
         once: true,
         at: this.timeline.elapsed + 450,
-        target: buildingName,
+        target: building,
         run: () => {
           const reward = building.onComplete()
           this.inventory.add(reward)

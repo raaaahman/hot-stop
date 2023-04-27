@@ -33,6 +33,7 @@ export default class GameScene extends Scene {
           (layer: Phaser.Tilemaps.TilemapLayer) => layer.name === 'rooms'
         )
     )
+    store.init()
     this.add.image(this.scale.width / 2, this.scale.height / 2, MAP_ROAD_360)
 
     const disposeEventsUpdate = autorun(() => {

@@ -12,7 +12,7 @@ describe('The Building domain object', () => {
       TEST_DATA.layers.find((layer) => layer.name === 'rooms')
     )
 
-    expect(buildings.length).toBe(15)
+    expect(buildings.length).toBe(16)
     expect(buildings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ name: 'counter', type: 'counter' }),

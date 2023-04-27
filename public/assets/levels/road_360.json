@@ -275,19 +275,9 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
-                        }, 
-                        {
-                         "name":"duration",
-                         "type":"int",
-                         "value":12000
-                        }, 
-                        {
-                         "name":"reward",
-                         "type":"string",
-                         "value":"{ \"scraps\": 150 }"
                         }],
                  "rotation":0,
-                 "type":"rubble",
+                 "type":"car",
                  "visible":true,
                  "width":96,
                  "x":768,
@@ -302,41 +292,9 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
-                        }, 
-                        {
-                         "name":"duration",
-                         "type":"int",
-                         "value":24000
-                        }, 
-                        {
-                         "name":"next",
-                         "type":"object",
-                         "value":21
-                        }, 
-                        {
-                         "name":"reward",
-                         "type":"string",
-                         "value":"{ \"scraps\": 50 }"
                         }],
                  "rotation":0,
-                 "type":"rubble",
-                 "visible":true,
-                 "width":96,
-                 "x":1056,
-                 "y":480
-                }, 
-                {
-                 "height":96,
-                 "id":21,
-                 "name":"pickup",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"vehicle",
+                 "type":"car",
                  "visible":true,
                  "width":96,
                  "x":1056,
@@ -351,19 +309,9 @@
                          "name":"available",
                          "type":"bool",
                          "value":true
-                        }, 
-                        {
-                         "name":"duration",
-                         "type":"int",
-                         "value":18000
-                        }, 
-                        {
-                         "name":"reward",
-                         "type":"string",
-                         "value":"{ \"scraps\": 200 }"
                         }],
                  "rotation":0,
-                 "type":"rubble",
+                 "type":"car",
                  "visible":true,
                  "width":96,
                  "x":1056,
