@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx'
 
 import Building from '../building/Building'
 import { CharacterWants } from './types'
+import { BuildingService } from '../building/types'
 
 export default class Character {
   public name = ''
@@ -16,5 +17,9 @@ export default class Character {
 
   get id() {
     return this._id
+  }
+
+  onSatisfied(type: BuildingService['type']) {
+    //TODO: Implement function
   }
 }

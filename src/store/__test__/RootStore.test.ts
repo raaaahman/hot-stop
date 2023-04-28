@@ -42,11 +42,24 @@ describe('The RootStore', () => {
       expect(character.location).toBe(kitchen)
     })
 
-    it('should make building with the assigned unavailable', () => {
+    it('should make building with the assigned character unavailable', () => {
       store.assign('kitchen', character.id)
 
       expect(store.buildings).toContainEqual(
-        expect.objectContaining({ name: 'kitchen', isAvailable: false })
+        expect.objectContaining({ name: 'kitchen', available: false })
+      )
+    })
+
+    it('should remove old event that targets this character', () => {
+      const previousEvent = {
+        target: character,
+      }
+      store.timeline.add(previousEvent)
+
+      store.assign('kitchen', character.id)
+
+      expect(store.timeline.events).not.toEqual(
+        expect.arrayContaining([previousEvent])
       )
     })
 
@@ -75,6 +88,21 @@ describe('The RootStore', () => {
       store.timeline.events.find((event) => event.target === kitchen)?.run()
 
       expect(kitchen.onComplete).toHaveBeenCalledTimes(1)
+    })
+
+    it('should call the onSatisfied method from the assigned character with the type of the building task', () => {
+      const building = new Building('table5', 'table', 96, 64, 64, 96, true, [
+        { type: 'place', duration: 1200 },
+      ])
+      store.buildings.push(building)
+      vi.spyOn(character, 'onSatisfied')
+
+      store.assign(building.name, character.id)
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      store.timeline.events.find((event) => event.target === building)?.run()
+
+      expect(character.onSatisfied).toHaveBeenCalledWith(building.task.type)
     })
   })
 })

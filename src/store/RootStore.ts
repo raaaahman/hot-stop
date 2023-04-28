@@ -1,11 +1,11 @@
 import { action, makeObservable, observable } from 'mobx'
 
 import Building from './building/Building'
-import Character from './character/Character'
 import InventoryStore from './inventory/InventoryStore'
 import { createFromObjects } from './building/factories'
 import { Chance } from 'chance'
 import CharacterStore from './character/CharacterStore'
+import { BuildingService, isBuildingService } from './building/types'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
@@ -52,7 +52,7 @@ export default class RootStore {
         target: character,
         set: {
           location: building,
-          isActive: true,
+          isActive: false,
         },
       })
     }
@@ -63,27 +63,29 @@ export default class RootStore {
     const building = this.buildings.find(
       (building) => building.name === buildingName
     )
-    building?.setAvailable(false)
 
     const character = this.characters.find(
       (character) => characterId === character.id
     )
-    if (character && building) {
+
+    if (character && building && building.available && building.task) {
       character.location = building
+      building.setAvailable(false)
+
+      this.timeline.events = this.timeline.events.filter(
+        (event) => event.target !== character
+      )
+
       this.timeline.add({
         once: true,
-        at: this.timeline.elapsed + 450,
+        in: building.task.duration,
         target: building,
         run: () => {
+          if (isBuildingService(building.task)) {
+            character.onSatisfied(building.task.type)
+          }
           const reward = building.onComplete()
           this.inventory.add(reward)
-          building.setAvailable(true)
-          const counterBuilding = this.buildings.find(
-            (building) => building.name === 'counter'
-          )
-          if (counterBuilding) {
-            character.location = counterBuilding
-          }
         },
       })
     }

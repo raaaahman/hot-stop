@@ -3,7 +3,6 @@ import { describe, it, expect } from 'vitest'
 import Building from '../Building'
 import { createFromObjects } from '../factories'
 import TEST_DATA from '../../../../public/assets/levels/road_360.json'
-import Character from '../../character/Character'
 
 describe('The Building domain object', () => {
   it('should create an array of instances from Tiled Object Layer data', () => {

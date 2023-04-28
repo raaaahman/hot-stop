@@ -59,7 +59,7 @@ export default class GameScene extends Scene {
         .setName(obj.name)
 
       autorun(() => {
-        if (obj.isAvailable) {
+        if (obj.available) {
           zone.setInteractive()
           zone.setAlpha(0.01)
         } else {

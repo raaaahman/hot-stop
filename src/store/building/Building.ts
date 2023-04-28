@@ -1,6 +1,7 @@
-import { makeAutoObservable } from 'mobx'
+import { action, computed, makeObservable } from 'mobx'
 
 import { BuildingType } from './BuildingSchema'
+import { BuildingChore, BuildingService } from './types'
 
 export default class Building {
   private _currentTask = 0
@@ -13,9 +14,13 @@ export default class Building {
     private width: number,
     private height: number,
     public _available = true,
-    private _tasks: Record<string, any>[] = []
+    private _tasks: (BuildingService | BuildingChore)[] = []
   ) {
-    makeAutoObservable(this)
+    makeObservable(this, {
+      available: computed,
+      task: computed,
+      onComplete: action,
+    })
   }
 
   get name() {
