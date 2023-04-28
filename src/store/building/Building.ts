@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 
 import { BuildingType } from './BuildingSchema'
 
@@ -12,15 +12,10 @@ export default class Building {
     private y: number,
     private width: number,
     private height: number,
-    public available = true,
+    public _available = true,
     private _tasks: Record<string, any>[] = []
   ) {
-    makeObservable(this, {
-      available: observable,
-      isAvailable: computed,
-      setAvailable: action,
-      onComplete: action,
-    })
+    makeAutoObservable(this)
   }
 
   get name() {
@@ -44,22 +39,21 @@ export default class Building {
     }
   }
 
-  get isAvailable() {
-    return this.available
+  get available() {
+    return this._available
   }
 
   setAvailable(value = true) {
-    this.available = value
-  }
-
-  private nextTask() {
-    this._currentTask =
-      this._currentTask === this._tasks.length - 1 ? 0 : this._currentTask + 1
+    this._available = value
   }
 
   onComplete() {
-    this.nextTask()
-    this.available = true
+    if (this._currentTask === this._tasks.length - 1) {
+      this._currentTask = 0
+      this._available = true
+    } else {
+      this._currentTask++
+    }
     return {}
   }
 }

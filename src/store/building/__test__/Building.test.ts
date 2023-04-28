@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest'
 import Building from '../Building'
 import { createFromObjects } from '../factories'
 import TEST_DATA from '../../../../public/assets/levels/road_360.json'
+import Character from '../../character/Character'
 
 describe('The Building domain object', () => {
   it('should create an array of instances from Tiled Object Layer data', () => {
@@ -47,22 +48,6 @@ describe('The Building domain object', () => {
   })
 
   describe('the onComplete method', () => {
-    it('should set the building available again', () => {
-      const building = new Building(
-        'bedroom1',
-        'bedroom',
-        64,
-        128,
-        256,
-        128,
-        false
-      )
-
-      building.onComplete()
-
-      expect(building.available).toBe(true)
-    })
-
     it('should advance to the next task in the list', () => {
       const building = new Building(
         'kitchen',
@@ -105,6 +90,35 @@ describe('The Building domain object', () => {
       building.onComplete()
 
       expect(building.task.type).toEqual('place')
+    })
+
+    it('should set the building available again after the last task has been completed', () => {
+      const building = new Building(
+        'bedroom1',
+        'bedroom',
+        64,
+        128,
+        256,
+        128,
+        false,
+        [
+          { type: 'place', duration: 1200 },
+          { type: 'serve', duration: 2400 },
+          { type: 'clean', duration: 1200 },
+        ]
+      )
+
+      building.onComplete()
+
+      expect(building.available).toBe(false)
+
+      building.onComplete()
+
+      expect(building.available).toBe(false)
+
+      building.onComplete()
+
+      expect(building.available).toBe(true)
     })
   })
 })
