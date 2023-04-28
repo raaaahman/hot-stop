@@ -5,7 +5,7 @@ import InventoryStore from './inventory/InventoryStore'
 import { createFromObjects } from './building/factories'
 import { Chance } from 'chance'
 import CharacterStore from './character/CharacterStore'
-import { BuildingService, isBuildingService } from './building/types'
+import { isBuildingService } from './building/types'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
