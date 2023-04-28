@@ -34,7 +34,7 @@ export default class RootStore {
       const building = this.buildings.filter(
         (building: Building) => building.type === 'car'
       )[chance.integer({ min: 0, max: 2 })]
-      const character = Character.create(this.characters)
+      const character = this.characters.create()
       character.isActive = true
 
       events.push({

@@ -28,7 +28,7 @@ describe('The RootStore', () => {
       // @ts-ignore
       TEST_DATA.layers.find((layer) => layer.name === 'rooms')
     )
-    character = Character.create(store.characters)
+    character = store.characters.create()
   })
 
   describe('the assign method', () => {
