@@ -3,6 +3,8 @@ import { action, computed, makeObservable, observable } from 'mobx'
 import { BuildingType } from './BuildingSchema'
 
 export default class Building {
+  private _currentTask = 0
+
   constructor(
     private _name: string,
     private _type: BuildingType,
@@ -10,7 +12,8 @@ export default class Building {
     private y: number,
     private width: number,
     private height: number,
-    public available = true
+    public available = true,
+    private _tasks: Record<string, any>[] = []
   ) {
     makeObservable(this, {
       available: observable,
@@ -26,6 +29,10 @@ export default class Building {
 
   get type() {
     return this._type
+  }
+
+  get task() {
+    return { ...this._tasks[this._currentTask] }
   }
 
   get boundingRectangle() {
@@ -45,16 +52,13 @@ export default class Building {
     this.available = value
   }
 
-  createTask(end: number) {
-    return {
-      target: this._name,
-      at: end,
-      once: true,
-      run: this.onComplete,
-    }
+  private nextTask() {
+    this._currentTask =
+      this._currentTask === this._tasks.length - 1 ? 0 : this._currentTask + 1
   }
 
   onComplete() {
+    this.nextTask()
     this.available = true
     return {}
   }

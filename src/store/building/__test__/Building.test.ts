@@ -24,8 +24,8 @@ describe('The Building domain object', () => {
     )
   })
 
-  describe('the createTask method', () => {
-    it('should schedule the event to be set after the elapsed time passed as argument', () => {
+  describe('the task getter', () => {
+    it('should return a task object that matches the type and duration of the first task in the list', () => {
       const building = new Building(
         'kitchen',
         'kitchen',
@@ -33,25 +33,16 @@ describe('The Building domain object', () => {
         32,
         160,
         128,
-        true
+        true,
+        [
+          { type: 'place', duration: 1200 },
+          { type: 'serve', duration: 2400 },
+          { type: 'clean', duration: 1200 },
+        ]
       )
-      const elapsed = 450
 
-      const task = building.createTask(elapsed)
-
-      expect(task.at).toBeGreaterThanOrEqual(elapsed)
-    })
-
-    it('should return a one time event with its name as the target and its onComplete method as callback', () => {
-      const building = new Building('rubble1', 'rubble', 32, 64, 128, 96, true)
-
-      const task = building.createTask(300)
-
-      expect(task).toMatchObject({
-        target: 'rubble1',
-        once: true,
-        run: building.onComplete,
-      })
+      expect(building.task.type).toEqual('place')
+      expect(building.task.duration).toEqual(1200)
     })
   })
 
@@ -70,6 +61,50 @@ describe('The Building domain object', () => {
       building.onComplete()
 
       expect(building.available).toBe(true)
+    })
+
+    it('should advance to the next task in the list', () => {
+      const building = new Building(
+        'kitchen',
+        'kitchen',
+        256,
+        32,
+        160,
+        128,
+        true,
+        [
+          { type: 'place', duration: 1200 },
+          { type: 'serve', duration: 2400 },
+          { type: 'clean', duration: 1200 },
+        ]
+      )
+
+      building.onComplete()
+
+      expect(building.task.type).toEqual('serve')
+    })
+
+    it('should set the task back to the first in the list if the current task is the last in the list', () => {
+      const building = new Building(
+        'kitchen',
+        'kitchen',
+        256,
+        32,
+        160,
+        128,
+        true,
+        [
+          { type: 'place', duration: 1200 },
+          { type: 'serve', duration: 2400 },
+          { type: 'clean', duration: 1200 },
+        ]
+      )
+
+      building.onComplete()
+      building.onComplete()
+      building.onComplete()
+
+      expect(building.task.type).toEqual('place')
     })
   })
 })
