@@ -1,19 +1,19 @@
 import { makeAutoObservable } from 'mobx'
 
 export default class InventoryStore {
-  private _scraps = 0
+  private _money = 0
 
   constructor() {
     makeAutoObservable(this)
   }
 
-  get scraps() {
-    return this._scraps
+  get money() {
+    return this._money
   }
 
   add(reward: Record<string, any>) {
-    if ('scraps' in reward) {
-      this._scraps += reward.scraps
+    if ('money' in reward) {
+      this._money += reward.money
     }
   }
 }

@@ -1,6 +1,7 @@
 export type BuildingService = {
   type: 'place' | 'serve'
   duration: number
+  reward?: { money: number }
 }
 
 export function isBuildingService(

@@ -20,6 +20,8 @@ export default class Character {
   }
 
   onSatisfied(type: BuildingService['type']) {
-    //TODO: Implement function
+    if (type === 'serve' && this.wants === CharacterWants.eat) {
+      this.wants = undefined
+    }
   }
 }

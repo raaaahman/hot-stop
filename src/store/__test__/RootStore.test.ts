@@ -7,10 +7,12 @@ import RootStore from '../RootStore'
 import Building from '../building/Building'
 import Character from '../character/Character'
 import TEST_DATA from '../../../public/assets/levels/road_360.json'
+import { BuildingService } from '../building/types'
 
 vi.mock('phaser/src/time/Timeline.js', () => ({
   default: class {
     events: object[] = []
+
     add(config: object) {
       this.events.push(config)
     }
@@ -82,10 +84,7 @@ describe('The RootStore', () => {
       ) as Building
       vi.spyOn(kitchen, 'onComplete')
 
-      store.assign('kitchen', character.id)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      store.timeline.events.find((event) => event.target === kitchen)?.run()
+      runEvent(kitchen, character)
 
       expect(kitchen.onComplete).toHaveBeenCalledTimes(1)
     })
@@ -97,12 +96,54 @@ describe('The RootStore', () => {
       store.buildings.push(building)
       vi.spyOn(character, 'onSatisfied')
 
-      store.assign(building.name, character.id)
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      store.timeline.events.find((event) => event.target === building)?.run()
+      runEvent(building, character)
 
       expect(character.onSatisfied).toHaveBeenCalledWith(building.task.type)
     })
+
+    it.each([
+      [1, 'full', 0],
+      [1.5, 'half', 0.5],
+      [2, 'no', 1],
+    ])(
+      "should add the reward from the building's task to the inventory, multiplied by a factor of %d for %s time elapsed",
+      (rewardMultiplier, ratio, timeMultiplier) => {
+        const service = { type: 'serve', duration: 1500, reward: { money: 25 } }
+        const building = new Building(
+          'table5',
+          'table',
+          64,
+          96,
+          128,
+          256,
+          true,
+          [service as BuildingService]
+        )
+        store.buildings.push(building)
+        store.timeline.add({
+          time: 10000,
+          target: character,
+        })
+        store.timeline.elapsed = 10000 - 10000 * timeMultiplier
+
+        runEvent(building, character)
+
+        expect(store.inventory.money).toEqual(
+          service.reward.money * rewardMultiplier
+        )
+      }
+    )
+
+    function runEvent(building: Building, character: Character) {
+      store.assign(building.name, character.id)
+      const event = store.timeline.events.find(
+        (event) => event.target === building
+      )
+      if (event) {
+        event.run()
+      } else {
+        throw new Error('Something went wrong when creating the event')
+      }
+    }
   })
 })

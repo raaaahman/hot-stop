@@ -72,8 +72,8 @@ export default class RootStore {
       character.location = building
       building.setAvailable(false)
 
-      this.timeline.events = this.timeline.events.filter(
-        (event) => event.target !== character
+      const events = this.timeline.events.splice(
+        this.timeline.events.findIndex((event) => event.target == character)
       )
 
       this.timeline.add({
@@ -84,8 +84,16 @@ export default class RootStore {
           if (isBuildingService(building.task)) {
             character.onSatisfied(building.task.type)
           }
-          const reward = building.onComplete()
-          this.inventory.add(reward)
+          if ('reward' in building.task && building.task.reward) {
+            const reward = {
+              ...building.task.reward,
+              money:
+                building.task.reward.money *
+                (1 + (events[0].time - this.timeline.elapsed) / events[0].time),
+            }
+            this.inventory.add(reward)
+          }
+          building.onComplete()
         },
       })
     }
