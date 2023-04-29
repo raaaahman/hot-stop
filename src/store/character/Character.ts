@@ -10,6 +10,7 @@ export default class Character {
   public isActive = false
   public location?: Building
   public wants: CharacterWants[] = []
+  private _satisfaction = 1
 
   constructor(private _id: number) {
     makeAutoObservable(this)
@@ -19,8 +20,13 @@ export default class Character {
     return this._id
   }
 
-  onSatisfied(type: BuildingService['type']) {
+  get satisfaction() {
+    return this._satisfaction
+  }
+
+  onSatisfied(type: BuildingService['type'], remainingTime: number) {
     if (this.wants[0]?.type === type) {
+      this._satisfaction += remainingTime / this.wants[0].limit
       this.wants?.splice(0, 1)
     }
   }

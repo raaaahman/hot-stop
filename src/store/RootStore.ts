@@ -83,14 +83,15 @@ export default class RootStore {
         target: building,
         run: () => {
           if (isBuildingService(building.task)) {
-            character.onSatisfied(building.task.type)
+            character.onSatisfied(
+              building.task.type,
+              events[0].time - this.timeline.elapsed
+            )
           }
           if ('reward' in building.task && building.task.reward) {
             const reward = {
               ...building.task.reward,
-              money:
-                building.task.reward.money *
-                (1 + (events[0].time - this.timeline.elapsed) / events[0].time),
+              money: building.task.reward.money * character.satisfaction,
             }
             this.inventory.add(reward)
           }

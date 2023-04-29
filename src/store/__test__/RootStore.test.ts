@@ -94,21 +94,32 @@ describe('The RootStore', () => {
         { type: 'place', duration: 1200 },
       ])
       store.buildings.push(building)
-      vi.spyOn(character, 'onSatisfied')
+      const mock = vi.spyOn(character, 'onSatisfied').mock
+      store.timeline.add({
+        time: character.wants[0]?.limit,
+        target: character,
+      })
+      store.timeline.elapsed = 0
 
       runEvent(building, character)
 
-      expect(character.onSatisfied).toHaveBeenCalledWith(building.task.type)
+      expect(mock.calls[0]).toEqual(
+        expect.arrayContaining([building.task.type])
+      )
     })
 
     it.each([
-      [1, 'full', 0],
+      [1, 'full', 1],
       [1.5, 'half', 0.5],
-      [2, 'no', 1],
+      [2, 'no', 0],
     ])(
       "should add the reward from the building's task to the inventory, multiplied by a factor of %d for %s time elapsed",
       (rewardMultiplier, ratio, timeMultiplier) => {
-        const service = { type: 'serve', duration: 1500, reward: { money: 25 } }
+        const service = {
+          type: character.wants[0].type,
+          duration: 1500,
+          reward: { money: 25 },
+        }
         const building = new Building(
           'table5',
           'table',
@@ -121,10 +132,10 @@ describe('The RootStore', () => {
         )
         store.buildings.push(building)
         store.timeline.add({
-          time: 10000,
+          time: character.wants[0].limit,
           target: character,
         })
-        store.timeline.elapsed = 10000 - 10000 * timeMultiplier
+        store.timeline.elapsed = character.wants[0].limit * timeMultiplier
 
         runEvent(building, character)
 
