@@ -73,7 +73,8 @@ export default class RootStore {
       building.setAvailable(false)
 
       const events = this.timeline.events.splice(
-        this.timeline.events.findIndex((event) => event.target == character)
+        this.timeline.events.findIndex((event) => event.target === character),
+        1
       )
 
       this.timeline.add({
