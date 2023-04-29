@@ -69,8 +69,7 @@ export default class RootStore {
     )
 
     if (character && building && building.available && building.task) {
-      character.location = building
-      building.setAvailable(false)
+      building.assign(character)
 
       const events = this.timeline.events.splice(
         this.timeline.events.findIndex((event) => event.target === character),

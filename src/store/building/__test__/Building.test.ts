@@ -1,8 +1,9 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 
 import Building from '../Building'
 import { createFromObjects } from '../factories'
 import TEST_DATA from '../../../../public/assets/levels/road_360.json'
+import Character from '../../character/Character'
 
 describe('The Building domain object', () => {
   it('should create an array of instances from Tiled Object Layer data', () => {
@@ -43,6 +44,29 @@ describe('The Building domain object', () => {
 
       expect(building.task.type).toEqual('place')
       expect(building.task.duration).toEqual(1200)
+    })
+  })
+
+  describe('the assign method', () => {
+    let character: Character, building: Building
+
+    beforeEach(() => {
+      character = new Character(1)
+      building = new Building('kitchen', 'kitchen', 256, 32, 160, 128, true, [
+        { type: 'order', duration: 3600 },
+      ])
+    })
+
+    it("should set the argument's Character location to the current Building", () => {
+      building.assign(character)
+
+      expect(character.location).toBe(building)
+    })
+
+    it('should set the building as unavailable', () => {
+      building.assign(character)
+
+      expect(building._available).toBe(false)
     })
   })
 

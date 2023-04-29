@@ -2,6 +2,7 @@ import { action, computed, makeObservable } from 'mobx'
 
 import { BuildingType } from './BuildingSchema'
 import { BuildingChore, BuildingService } from './types'
+import Character from '../character/Character'
 
 export default class Building {
   private _currentTask = 0
@@ -48,8 +49,9 @@ export default class Building {
     return this._available
   }
 
-  setAvailable(value = true) {
-    this._available = value
+  assign(character: Character) {
+    character.location = this
+    this._available = false
   }
 
   onComplete() {
