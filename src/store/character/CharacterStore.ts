@@ -23,10 +23,16 @@ export default class CharacterStore {
     character.name = CharacterStore.chance.name({
       gender: character.gender,
     })
-    character.wants = CharacterWants[
-      CharacterStore.chance.integer({ min: 0, max: 1 })
-    ] as unknown as CharacterWants
-
+    character.wants = [
+      {
+        type: 'place',
+        limit: CharacterStore.chance.integer({ min: 24, max: 48 }) * 100,
+      },
+      {
+        type: 'serve',
+        limit: CharacterStore.chance.integer({ min: 42, max: 64 }) * 100,
+      },
+    ]
     this._characters.push(character)
 
     return character

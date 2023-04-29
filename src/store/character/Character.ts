@@ -9,7 +9,7 @@ export default class Character {
   public gender: 'male' | 'female' | '' = ''
   public isActive = false
   public location?: Building
-  public wants?: CharacterWants
+  public wants: CharacterWants[] = []
 
   constructor(private _id: number) {
     makeAutoObservable(this)
@@ -20,8 +20,8 @@ export default class Character {
   }
 
   onSatisfied(type: BuildingService['type']) {
-    if (type === 'serve' && this.wants === CharacterWants.eat) {
-      this.wants = undefined
+    if (this.wants[0]?.type === type) {
+      this.wants?.splice(0, 1)
     }
   }
 }

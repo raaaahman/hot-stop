@@ -47,7 +47,7 @@ export default class RootStore {
       })
 
       events.push({
-        from: chance.integer({ min: 10, max: 30 }) * 1000,
+        from: character.wants[0].limit,
         once: true,
         target: character,
         set: {
