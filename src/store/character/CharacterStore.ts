@@ -2,7 +2,6 @@ import { makeAutoObservable } from 'mobx'
 import { Chance } from 'chance'
 
 import Character from './Character'
-import { CharacterWants } from './types'
 
 export default class CharacterStore {
   static chance = new Chance()
@@ -26,11 +25,11 @@ export default class CharacterStore {
     character.wants = [
       {
         type: 'place',
-        limit: CharacterStore.chance.integer({ min: 24, max: 48 }) * 100,
+        limit: CharacterStore.chance.integer({ min: 24, max: 48 }) * 500,
       },
       {
         type: 'serve',
-        limit: CharacterStore.chance.integer({ min: 42, max: 64 }) * 100,
+        limit: CharacterStore.chance.integer({ min: 42, max: 64 }) * 500,
       },
     ]
     this._characters.push(character)

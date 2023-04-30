@@ -12,7 +12,7 @@ describe('The createFromObjects factory function', () => {
       LEVEL_DATA.layers.find((layer) => layer.name === 'rooms')
     )
 
-    expect(buildings).toHaveLength(16)
+    expect(buildings).toHaveLength(13)
     buildings.forEach((building) => expect(building).toBeInstanceOf(Building))
   })
 })

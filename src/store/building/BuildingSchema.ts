@@ -5,7 +5,8 @@ export const BuildingTypeSchema = z.enum([
   'car',
   'counter',
   'table',
-  'kitchen',
+  'kitchen-stall',
+  'kitchen-sink',
   'bedroom',
   'wall',
 ])

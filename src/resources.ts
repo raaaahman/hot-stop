@@ -5,3 +5,7 @@ export const SPRITE_CHARACTER = {
   MALE: ['GuyDarkExample', 'GuyLightExample', 'HatGuy'],
   FEMALE: ['GirlDarkExample', 'GirlLightExample', 'RedHeadExample'],
 }
+export const SPRITE_ITEMS = {
+  NOTE: 'item-note',
+  PLATE: 'item-plate',
+}

@@ -58,7 +58,7 @@ describe('The RootStore', () => {
       }
       store.timeline.add(previousEvent)
 
-      store.assignCharacter('kitchen', character.id)
+      store.assignCharacter('kitchen1', character.id)
 
       expect(store.timeline.events).not.toEqual(
         expect.arrayContaining([previousEvent])
@@ -67,21 +67,14 @@ describe('The RootStore', () => {
 
     it('should add an event to the timeline', () => {
       vi.spyOn(store.timeline, 'add')
-      store.assignCharacter('kitchen', character.id)
+      store.assignCharacter('kitchen1', character.id)
 
       expect(store.timeline.add).toHaveBeenCalledWith(
         expect.objectContaining({
-          target: store.buildings.find((current) => current.name === 'kitchen'),
+          target: store.buildings.find(
+            (current) => current.name === 'kitchen1'
+          ),
         })
-      )
-    })
-
-    it("should add an order to the store if the task has an 'order' property", () => {
-      store.assignCharacter('table1', character.id)
-
-      expect(store.orders).toHaveLength(1)
-      expect(store.orders).toEqual(
-        expect.arrayContaining([expect.objectContaining({ from: character })])
       )
     })
   })
@@ -89,7 +82,7 @@ describe('The RootStore', () => {
   describe('the timeline events', () => {
     it('should call the onComplete method from the building where the character is assigned', () => {
       const kitchen = store.buildings.find(
-        (building) => building.name === 'kitchen'
+        (building) => building.name === 'kitchen1'
       ) as Building
       vi.spyOn(kitchen, 'onComplete')
 
@@ -153,6 +146,19 @@ describe('The RootStore', () => {
         )
       }
     )
+
+    it("should add an order to the store if the task has an 'order' property", () => {
+      store.assignCharacter('table1', character.id)
+
+      runEvent(
+        store.buildings.find(
+          (building) => building.name === 'table1'
+        ) as Building,
+        character
+      )
+
+      expect(store.orders.findById(0)).toMatchObject({ from: character })
+    })
 
     function runEvent(building: Building, character: Character) {
       store.assignCharacter(building.name, character.id)

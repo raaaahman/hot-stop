@@ -14,11 +14,12 @@ describe('The Building domain object', () => {
       TEST_DATA.layers.find((layer) => layer.name === 'rooms')
     )
 
-    expect(buildings.length).toBe(16)
+    expect(buildings.length).toBe(13)
     expect(buildings).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ name: 'counter', type: 'counter' }),
-        expect.objectContaining({ name: 'kitchen', type: 'kitchen' }),
+        expect.objectContaining({ name: 'kitchen1', type: 'kitchen-stall' }),
+        expect.objectContaining({ name: 'kitchen2', type: 'kitchen-sink' }),
         expect.objectContaining({ name: 'bedroom1', type: 'bedroom' }),
         expect.objectContaining({ name: 'bedroom2', type: 'bedroom' }),
         expect.objectContaining({ name: 'bedroom3', type: 'bedroom' }),
@@ -29,8 +30,8 @@ describe('The Building domain object', () => {
   describe('the task getter', () => {
     it('should return a task object that matches the type and duration of the first task in the list', () => {
       const building = new Building(
-        'kitchen',
-        'kitchen',
+        'table1',
+        'table',
         256,
         32,
         160,
@@ -56,7 +57,7 @@ describe('The Building domain object', () => {
 
     beforeEach(() => {
       character = new Character(1)
-      order = new Order(1, 'order', character)
+      order = new Order(1, 'cook', character)
       buildingWithService = new Building(
         'table1',
         'table',
@@ -68,14 +69,14 @@ describe('The Building domain object', () => {
         [{ type: 'place', duration: 1200 }]
       )
       buildingWithChore = new Building(
-        'kitchen',
-        'kitchen',
+        'kitchen1',
+        'kitchen-stall',
         256,
         32,
         160,
         128,
         true,
-        [{ type: 'order', duration: 3600 }]
+        [{ type: 'cook', duration: 3600 }]
       )
     })
 
@@ -125,8 +126,8 @@ describe('The Building domain object', () => {
   describe('the onComplete method', () => {
     it('should advance to the next task in the list', () => {
       const building = new Building(
-        'kitchen',
-        'kitchen',
+        'table1',
+        'table',
         256,
         32,
         160,
@@ -146,8 +147,8 @@ describe('The Building domain object', () => {
 
     it('should set the task back to the first in the list if the current task is the last in the list', () => {
       const building = new Building(
-        'kitchen',
-        'kitchen',
+        'table1',
+        'table',
         256,
         32,
         160,

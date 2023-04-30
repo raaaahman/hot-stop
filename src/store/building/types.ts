@@ -14,12 +14,12 @@ export function isBuildingService(
 }
 
 export type BuildingChore = {
-  type: 'order' | 'clean'
+  type: 'cook' | 'clean'
   duration: number
 }
 
 export function isBuildingChore(
   task: BuildingService | BuildingChore
 ): task is BuildingChore {
-  return ['order', 'clean'].includes(task.type)
+  return ['cook', 'clean'].includes(task.type)
 }

@@ -1,12 +1,16 @@
 import { makeAutoObservable } from 'mobx'
 import Character from '../character/Character'
+import Building from '../building/Building'
 
-export type OrderType = 'order' | 'clean'
+export type OrderType = 'cook' | 'clean'
 
 export default class Order {
+  public location?: Building
+  public active = false
+
   constructor(
     private _id: number,
-    private _type: OrderType,
+    public type: OrderType,
     private _from: Character
   ) {
     makeAutoObservable(this)
@@ -14,10 +18,6 @@ export default class Order {
 
   get id() {
     return this._id
-  }
-
-  get type() {
-    return this._type
   }
 
   get from() {

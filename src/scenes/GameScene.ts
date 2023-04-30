@@ -2,7 +2,12 @@ import { Scene } from 'phaser'
 import { autorun } from 'mobx'
 import { Chance } from 'chance'
 
-import { MAP_ROAD_360, SPRITE_CHARACTER, TILEMAP_ROAD_360 } from '../resources'
+import {
+  MAP_ROAD_360,
+  SPRITE_CHARACTER,
+  SPRITE_ITEMS,
+  TILEMAP_ROAD_360,
+} from '../resources'
 import RootStore from '../store/RootStore'
 
 export default class GameScene extends Scene {
@@ -20,6 +25,8 @@ export default class GameScene extends Scene {
         frameHeight: 40,
       })
     )
+    this.load.image(SPRITE_ITEMS.NOTE, 'assets/img/note.png')
+    this.load.image(SPRITE_ITEMS.PLATE, 'assets/img/plate.png')
     this.load.json(TILEMAP_ROAD_360, 'assets/levels/road_360.json')
   }
 
@@ -45,7 +52,6 @@ export default class GameScene extends Scene {
 
     const zones = this.add.group()
     store.buildings.forEach((obj) => {
-      console.log(obj.name)
       const zone = this.add
         .rectangle(
           obj.boundingRectangle.x,
@@ -103,22 +109,23 @@ export default class GameScene extends Scene {
         if (characterIdMatch) {
           store.assignCharacter(dropZone.name, Number(characterIdMatch[1]))
         }
+        const orderIdMatch = gameObject.name.match(/order-(\d+)/)
+        if (orderIdMatch) {
+          store.assignOrder(dropZone.name, Number(orderIdMatch[1]))
+        }
       }
     )
 
-    const characterSprites = this.add.group({
+    const sprites = this.add.group({
       classType: Phaser.GameObjects.Image,
     })
 
     autorun(() => {
       store.characters.forEach((character) => {
         if (
-          characterSprites.getMatching('name', 'character-' + character.id)
-            .length === 0
+          sprites.getMatching('name', 'character-' + character.id).length === 0
         ) {
-          const sprite = characterSprites.getFirstDead(
-            true
-          ) as Phaser.GameObjects.Image
+          const sprite = sprites.getFirstDead(true) as Phaser.GameObjects.Image
           sprite
             .setName('character-' + character.id)
             .setInteractive({
@@ -148,6 +155,11 @@ export default class GameScene extends Scene {
             )
 
           autorun(() => {
+            console.log(
+              character.name,
+              character.location?.boundingRectangle.x,
+              character.location?.boundingRectangle.y
+            )
             sprite.setX(
               (character.location?.boundingRectangle.x || -800) +
                 sprite.width / 2
@@ -176,7 +188,56 @@ export default class GameScene extends Scene {
                 .setActive(true)
                 .setVisible(true)
             } else {
-              characterSprites.killAndHide(sprite)
+              sprites.killAndHide(sprite)
+            }
+          })
+        }
+      })
+    })
+
+    autorun(() => {
+      store.orders.forEach((order) => {
+        if (sprites.getMatching('name', 'order-' + order.id).length === 0) {
+          const sprite = sprites.getFirstDead(true) as Phaser.GameObjects.Image
+          sprite
+            .setName('order-' + order.id)
+            .setInteractive({ draggable: true })
+            .on(
+              Phaser.Input.Events.DRAG,
+              (pointer: Phaser.Input.Pointer, dragX: number, dragY: number) => {
+                sprite.setX(dragX)
+                sprite.setY(dragY)
+              }
+            )
+
+          autorun(() => {
+            sprite.setX(
+              (order.location?.boundingRectangle.x || -800) + sprite.width * 2
+            )
+            sprite.setY(
+              order.location?.boundingRectangle.y || -800 + sprite.height / 2
+            )
+          })
+
+          autorun(() => {
+            console.log(order.type, order.from.name)
+            if (order.active) {
+              sprite
+                .setTexture(
+                  order.type === 'cook' ? SPRITE_ITEMS.NOTE : SPRITE_ITEMS.PLATE
+                )
+                .setX(
+                  (order.from.location?.boundingRectangle.x || -800) +
+                    sprite.width * 2
+                )
+                .setY(
+                  (order.from.location?.boundingRectangle.y || -800) +
+                    sprite.height / 2
+                )
+                .setActive(true)
+                .setVisible(true)
+            } else {
+              sprites.killAndHide(sprite)
             }
           })
         }

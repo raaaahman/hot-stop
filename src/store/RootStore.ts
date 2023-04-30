@@ -6,14 +6,14 @@ import { createFromObjects } from './building/factories'
 import { Chance } from 'chance'
 import CharacterStore from './character/CharacterStore'
 import { isBuildingService } from './building/types'
-import Order from './order/Order'
+import OrderStore from './order/OrderStore'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
   public buildings: Building[]
   public characters: CharacterStore
   public inventory: InventoryStore
-  public orders: Order[]
+  public orders: OrderStore
 
   constructor(
     timeline: Phaser.Time.Timeline,
@@ -26,14 +26,14 @@ export default class RootStore {
     this.buildings = observable(createFromObjects(objectLayer))
     this.characters = new CharacterStore()
     this.inventory = new InventoryStore()
-    this.orders = observable([])
+    this.orders = new OrderStore()
   }
 
   public init() {
     const chance = Chance()
     const events = []
-    for (let i = 0; i < chance.integer({ min: 12, max: 16 }); i++) {
-      const spawnTime = i * 22500 + chance.integer({ min: -12, max: 12 }) * 500
+    for (let i = 0; i < chance.integer({ min: 24, max: 32 }); i++) {
+      const spawnTime = i * 12000 + chance.integer({ min: -12, max: 12 }) * 500
       const building = this.buildings.filter(
         (building: Building) => building.type === 'car'
       )[chance.integer({ min: 0, max: 2 })]
@@ -54,7 +54,6 @@ export default class RootStore {
         once: true,
         target: character,
         set: {
-          location: building,
           isActive: false,
         },
       })
@@ -72,16 +71,19 @@ export default class RootStore {
     if (character && building && building.available && building.task) {
       building.assign(character)
 
-      if ('order' in building.task && building.task.order) {
-        this.orders.push(
-          new Order(this.orders.length, building.task.order.type, character)
-        )
-      }
-
       const events = this.timeline.events.splice(
         this.timeline.events.findIndex((event) => event.target === character),
         1
       )
+
+      this.timeline.add({
+        once: true,
+        in: character.wants[0].limit,
+        target: character,
+        set: {
+          isActive: false,
+        },
+      })
 
       this.timeline.add({
         once: true,
@@ -91,9 +93,14 @@ export default class RootStore {
           if (isBuildingService(building.task)) {
             character.onSatisfied(
               building.task.type,
-              events[0].time - this.timeline.elapsed
+              events.length > 0 ? events[0].time - this.timeline.elapsed : 0
             )
           }
+
+          if ('order' in building.task && building.task.order) {
+            this.orders.create(building.task.order.type, character)
+          }
+
           if ('reward' in building.task && building.task.reward) {
             const reward = {
               ...building.task.reward,
@@ -102,6 +109,48 @@ export default class RootStore {
             this.inventory.add(reward)
           }
           building.onComplete()
+        },
+      })
+    }
+  }
+
+  assignOrder(buildingName: string, orderId: integer) {
+    const building = this.buildings.find(
+      (building) => building.name === buildingName
+    )
+
+    const order = this.orders.findById(orderId)
+
+    if (
+      building &&
+      order &&
+      building.available &&
+      order.type === building.task.type
+    ) {
+      const events = this.timeline.events.splice(
+        this.timeline.events.findIndex((event) => event.target === order.from),
+        1
+      )
+
+      building.assign(order)
+
+      this.timeline.add({
+        once: true,
+        in: building.task.duration,
+        target: building,
+        run: () => {
+          if (order.type === 'cook') {
+            order.from.onSatisfied(
+              'serve',
+              events.length > 0 ? events[0].time - this.timeline.elapsed : 0
+            )
+          }
+
+          if (order.type === order.from.location?.task.type) {
+            order.from.location?.onComplete()
+          }
+
+          this.orders.remove(order.id)
         },
       })
     }
