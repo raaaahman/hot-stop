@@ -15,6 +15,7 @@ export default class OrderStore {
 
     if (order) {
       order.type = type
+      order.from = from
     } else {
       order = new Order(this._orders.length, type, from)
       this._orders.push(order)

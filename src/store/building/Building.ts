@@ -1,4 +1,4 @@
-import { action, computed, makeObservable } from 'mobx'
+import { action, computed, makeObservable, observable } from 'mobx'
 
 import { BuildingType } from './BuildingSchema'
 import {
@@ -24,6 +24,7 @@ export default class Building {
     private _tasks: (BuildingService | BuildingChore)[] = []
   ) {
     makeObservable(this, {
+      _available: observable,
       available: computed,
       task: computed,
       onComplete: action,

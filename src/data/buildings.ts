@@ -14,6 +14,10 @@ export default [
         order: { type: 'clean' },
         reward: { money: 25 },
       },
+      {
+        type: 'clean',
+        duration: 1200,
+      },
     ] as (BuildingChore | BuildingService)[],
   },
   {

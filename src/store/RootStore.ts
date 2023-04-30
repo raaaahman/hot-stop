@@ -142,12 +142,39 @@ export default class RootStore {
           if (order.type === 'cook') {
             order.from.onSatisfied(
               'serve',
-              events.length > 0 ? events[0].time - this.timeline.elapsed : 0
+              events[0].time - this.timeline.elapsed
             )
           }
 
-          if (order.type === order.from.location?.task.type) {
+          if (
+            order.from?.location?.task &&
+            'order' in order.from.location.task &&
+            order.from.location.task.order
+          ) {
+            this.orders.create(order.from.location.task.order.type, order.from)
+          }
+
+          if (
+            order.from?.location?.task &&
+            'reward' in order.from.location.task &&
+            order.from.location.task.reward
+          ) {
+            this.inventory.add({
+              money:
+                order.from.location.task.reward.money * order.from.satisfaction,
+            })
+          }
+
+          if (
+            order.type === order.from.location?.task.type ||
+            (order.type === 'cook' &&
+              order.from.location?.task.type === 'serve')
+          ) {
             order.from.location?.onComplete()
+          }
+
+          if (order.location) {
+            order.location.onComplete()
           }
 
           this.orders.remove(order.id)

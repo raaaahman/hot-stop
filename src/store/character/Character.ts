@@ -29,5 +29,8 @@ export default class Character {
       this._satisfaction += remainingTime / this.wants[0].limit
       this.wants?.splice(0, 1)
     }
+    if (this.wants.length === 0) {
+      this.isActive = false
+    }
   }
 }

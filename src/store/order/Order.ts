@@ -11,16 +11,12 @@ export default class Order {
   constructor(
     private _id: number,
     public type: OrderType,
-    private _from: Character
+    public from: Character
   ) {
     makeAutoObservable(this)
   }
 
   get id() {
     return this._id
-  }
-
-  get from() {
-    return this._from
   }
 }

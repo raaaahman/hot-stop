@@ -43,29 +43,23 @@ export default class GameScene extends Scene {
     store.init()
     this.add.image(this.scale.width / 2, this.scale.height / 2, MAP_ROAD_360)
 
-    const disposeEventsUpdate = autorun(() => {
-      console.log(
-        store.timeline.events.length,
-        store.timeline.events.map((event) => event.target.name)
-      )
-    })
-
     const zones = this.add.group()
-    store.buildings.forEach((obj) => {
+    store.buildings.forEach((building) => {
       const zone = this.add
         .rectangle(
-          obj.boundingRectangle.x,
-          obj.boundingRectangle.y,
-          obj.boundingRectangle.width,
-          obj.boundingRectangle.height,
+          building.boundingRectangle.x,
+          building.boundingRectangle.y,
+          building.boundingRectangle.width,
+          building.boundingRectangle.height,
           0x000000
         )
         .setOrigin(0)
         .setInteractive({ dropZone: true })
-        .setName(obj.name)
+        .setName(building.name)
 
       autorun(() => {
-        if (obj.available) {
+        console.log(building.name, 'available: ', building.available)
+        if (building.available) {
           zone.setInteractive()
           zone.setAlpha(0.01)
         } else {
@@ -75,28 +69,6 @@ export default class GameScene extends Scene {
       })
       zones.add(zone)
     })
-
-    this.input.on(
-      Phaser.Input.Events.DRAG_ENTER,
-      (
-        pointer: Phaser.Input.Pointer,
-        gameObject: Phaser.GameObjects.GameObject,
-        dropZone: Phaser.GameObjects.Zone
-      ) => {
-        console.log('enter ', dropZone.name)
-      }
-    )
-
-    this.input.on(
-      Phaser.Input.Events.DRAG_LEAVE,
-      (
-        pointer: Phaser.Input.Pointer,
-        gameObject: Phaser.GameObjects.GameObject,
-        dropZone: Phaser.GameObjects.Zone
-      ) => {
-        console.log('leave ', dropZone.name)
-      }
-    )
 
     this.input.on(
       Phaser.Input.Events.DROP,
@@ -113,6 +85,7 @@ export default class GameScene extends Scene {
         if (orderIdMatch) {
           store.assignOrder(dropZone.name, Number(orderIdMatch[1]))
         }
+        console.log(characterIdMatch, orderIdMatch)
       }
     )
 
@@ -146,20 +119,19 @@ export default class GameScene extends Scene {
                 y: number,
                 event: Phaser.Types.Input.EventData
               ) => {
-                const character = store.characters.find(
-                  (character) => 'character-' + character.id === sprite.name
-                )
-                store.characters.selected = character
+                const characterIdMatch = sprite.name.match(/character-(\d+)/)
+                if (characterIdMatch) {
+                  const character = store.characters.findById(
+                    Number(characterIdMatch[1])
+                  )
+                  store.characters.selected = character
+                }
                 event.stopPropagation()
               }
             )
 
           autorun(() => {
-            console.log(
-              character.name,
-              character.location?.boundingRectangle.x,
-              character.location?.boundingRectangle.y
-            )
+            console.log(character.id, character.name, character.location?.name)
             sprite.setX(
               (character.location?.boundingRectangle.x || -800) +
                 sprite.width / 2
@@ -211,6 +183,7 @@ export default class GameScene extends Scene {
             )
 
           autorun(() => {
+            console.log(order.id, order.type, order.location?.name)
             sprite.setX(
               (order.location?.boundingRectangle.x || -800) + sprite.width * 2
             )
@@ -220,7 +193,7 @@ export default class GameScene extends Scene {
           })
 
           autorun(() => {
-            console.log(order.type, order.from.name)
+            console.log(order.id, order.type, order.from.name)
             if (order.active) {
               sprite
                 .setTexture(
@@ -255,7 +228,10 @@ export default class GameScene extends Scene {
         characterName.text = store.characters.selected.name
         characterName.setVisible(true)
 
-        characterWants.text = 'Wants: ' + store.characters.selected.wants
+        characterWants.text =
+          store.characters.selected.wants.length > 0
+            ? 'Wants: ' + store.characters.selected.wants[0]?.type
+            : ''
         characterWants.setVisible(true)
       } else {
         characterName.text = ''
@@ -272,6 +248,12 @@ export default class GameScene extends Scene {
         store.characters.selected = undefined
       }
     )
+
+    const moneyText = this.add.text(40, 40, '', { color: '#fff' })
+
+    autorun(() => {
+      moneyText.text = `Money: ${Math.floor(store.inventory.money)}$`
+    })
 
     store.timeline.play()
   }

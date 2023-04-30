@@ -131,72 +131,22 @@
          "name":"rooms",
          "objects":[
                 {
-                 "height":160,
-                 "id":1,
-                 "name":"bedroom1",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"bedroom",
-                 "visible":true,
-                 "width":128,
-                 "x":576,
-                 "y":160
-                }, 
-                {
-                 "height":160,
-                 "id":2,
-                 "name":"bedroom2",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"bedroom",
-                 "visible":true,
-                 "width":128,
-                 "x":736,
-                 "y":160
-                }, 
-                {
-                 "height":160,
-                 "id":3,
-                 "name":"bedroom3",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"bedroom",
-                 "visible":true,
-                 "width":128,
-                 "x":896,
-                 "y":160
-                }, 
-                {
-                 "height":128,
-                 "id":4,
-                 "name":"kitchen1",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"kitchen-stall",
-                 "visible":true,
-                 "width":128,
-                 "x":222,
-                 "y":160
+                  "height": 128,
+                  "id": 4,
+                  "name": "kitchen1",
+                  "properties": [
+                    {
+                      "name": "available",
+                      "type": "bool",
+                      "value": true
+                    }
+                  ],
+                  "rotation": 0,
+                  "type": "kitchen-stall",
+                  "visible": true,
+                  "width": 128,
+                  "x": 222,
+                  "y": 160
                 }, 
                 {
                  "height":96,
@@ -318,38 +268,22 @@
                  "y":576
                 }, 
                 {
-                 "height":96,
-                 "id":19,
-                 "name":"counter",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":false
-                        }],
-                 "rotation":0,
-                 "type":"counter",
-                 "visible":true,
-                 "width":224,
-                 "x":224,
-                 "y":384
-                }, 
-                {
-                 "height":128,
-                 "id":22,
-                 "name":"kitchen2",
-                 "properties":[
-                        {
-                         "name":"available",
-                         "type":"bool",
-                         "value":true
-                        }],
-                 "rotation":0,
-                 "type":"kitchen-sink",
-                 "visible":true,
-                 "width":64,
-                 "x":352,
-                 "y":160
+                  "height": 128,
+                  "id": 22,
+                  "name": "kitchen2",
+                  "properties": [
+                    {
+                      "name": "available",
+                      "type": "bool",
+                      "value": true
+                    }
+                  ],
+                  "rotation": 0,
+                  "type": "kitchen-sink",
+                  "visible": true,
+                  "width": 64,
+                  "x": 352,
+                  "y": 160
                 }],
          "opacity":1,
          "type":"objectgroup",
