@@ -4,6 +4,7 @@ import Building from '../Building'
 import { createFromObjects } from '../factories'
 import TEST_DATA from '../../../../public/assets/levels/road_360.json'
 import Character from '../../character/Character'
+import Order from '../../order/Order'
 
 describe('The Building domain object', () => {
   it('should create an array of instances from Tiled Object Layer data', () => {
@@ -91,13 +92,19 @@ describe('The Building domain object', () => {
     it("should set the building as unavailable if the building's current task is a service and the assignee is a Character", () => {
       buildingWithService.assign(character)
 
-      expect(buildingWithChore.available).toBe(false)
+      expect(buildingWithService.available).toBe(false)
     })
 
     it("should not set the building as unavailable if the building's current task is a chore and the assignee is a character", () => {
       buildingWithChore.assign(character)
 
       expect(buildingWithChore.available).toBe(true)
+    })
+
+    it("should set the building as unavailable if the building's current task is a chore and the assignee is an Order", () => {
+      buildingWithChore.assign(new Order(1, 'order', character))
+
+      expect(buildingWithChore.available).toBe(false)
     })
   })
 

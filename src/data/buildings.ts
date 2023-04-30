@@ -7,8 +7,13 @@ export default [
   {
     type: 'table',
     tasks: [
-      { type: 'place', duration: 1200 },
-      { type: 'serve', duration: 2400, reward: { money: 25 } },
+      { type: 'place', duration: 1200, order: { type: 'order' } },
+      {
+        type: 'serve',
+        duration: 2400,
+        order: { type: 'clean' },
+        reward: { money: 25 },
+      },
       { type: 'clean', duration: 1600 },
     ] as (BuildingChore | BuildingService)[],
   },

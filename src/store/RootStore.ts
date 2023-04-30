@@ -6,12 +6,14 @@ import { createFromObjects } from './building/factories'
 import { Chance } from 'chance'
 import CharacterStore from './character/CharacterStore'
 import { isBuildingService } from './building/types'
+import Order from './order/Order'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
   public buildings: Building[]
   public characters: CharacterStore
   public inventory: InventoryStore
+  public orders: Order[]
 
   constructor(
     timeline: Phaser.Time.Timeline,
@@ -24,6 +26,7 @@ export default class RootStore {
     this.buildings = observable(createFromObjects(objectLayer))
     this.characters = new CharacterStore()
     this.inventory = new InventoryStore()
+    this.orders = observable([])
   }
 
   public init() {
@@ -68,6 +71,12 @@ export default class RootStore {
 
     if (character && building && building.available && building.task) {
       building.assign(character)
+
+      if ('order' in building.task && building.task.order) {
+        this.orders.push(
+          new Order(this.orders.length, building.task.order.type, character)
+        )
+      }
 
       const events = this.timeline.events.splice(
         this.timeline.events.findIndex((event) => event.target === character),

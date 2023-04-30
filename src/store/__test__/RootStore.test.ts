@@ -33,7 +33,7 @@ describe('The RootStore', () => {
     character = store.characters.create()
   })
 
-  describe('the assign method', () => {
+  describe('the assignCharacter method', () => {
     it('should set the new location of the character to the building with the given name', () => {
       store.assignCharacter('table1', character.id)
 
@@ -73,6 +73,15 @@ describe('The RootStore', () => {
         expect.objectContaining({
           target: store.buildings.find((current) => current.name === 'kitchen'),
         })
+      )
+    })
+
+    it("should add an order to the store if the task has an 'order' property", () => {
+      store.assignCharacter('table1', character.id)
+
+      expect(store.orders).toHaveLength(1)
+      expect(store.orders).toEqual(
+        expect.arrayContaining([expect.objectContaining({ from: character })])
       )
     })
   })

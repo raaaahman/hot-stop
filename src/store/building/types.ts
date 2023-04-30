@@ -1,6 +1,9 @@
+import { OrderType } from '../order/Order'
+
 export type BuildingService = {
   type: 'place' | 'serve'
   duration: number
+  order?: { type: OrderType }
   reward?: { money: number }
 }
 
