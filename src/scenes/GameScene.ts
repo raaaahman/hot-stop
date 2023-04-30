@@ -6,6 +6,7 @@ import {
   MAP_ROAD_360,
   MUSIC,
   SOUNDS,
+  SPRITE_FOOD,
   SPRITE_CHARACTER,
   SPRITE_ITEMS,
   TILEMAP_ROAD_360,
@@ -27,6 +28,10 @@ export default class GameScene extends Scene {
         frameHeight: 40,
       })
     )
+    this.load.spritesheet(SPRITE_FOOD, 'assets/img/food_spritesheet.png', {
+      frameWidth: 36,
+      frameHeight: 36,
+    })
     this.load.image(SPRITE_ITEMS.NOTE, 'assets/img/note.png')
     this.load.image(SPRITE_ITEMS.PLATE, 'assets/img/plate.png')
     this.load.audio(
@@ -70,10 +75,8 @@ export default class GameScene extends Scene {
       autorun(() => {
         console.log(building.name, 'available: ', building.available)
         if (building.available) {
-          zone.setInteractive()
           zone.setAlpha(0.01)
         } else {
-          zone.disableInteractive()
           zone.setAlpha(0.3)
         }
       })
@@ -97,7 +100,6 @@ export default class GameScene extends Scene {
           store.assignOrder(dropZone.name, Number(orderIdMatch[1]))
           this.sound.play(SOUNDS.ASSIGN)
         }
-        console.log(characterIdMatch, orderIdMatch)
       }
     )
 
@@ -210,21 +212,34 @@ export default class GameScene extends Scene {
             if (order.active) {
               sprite
                 .setTexture(
-                  order.type === 'cook' ? SPRITE_ITEMS.NOTE : SPRITE_ITEMS.PLATE
-                )
-                .setX(
-                  (order.from.location?.boundingRectangle.x || -800) +
-                    sprite.width * 2
-                )
-                .setY(
-                  (order.from.location?.boundingRectangle.y || -800) +
-                    sprite.height / 2
+                  order.type === 'cook'
+                    ? SPRITE_ITEMS.NOTE
+                    : order.type === 'clean'
+                    ? SPRITE_ITEMS.PLATE
+                    : SPRITE_FOOD,
+                  order.type === 'cook' || order.type === 'clean'
+                    ? 0
+                    : chance.integer({ min: 11 * 14 - 1, max: 11 * 14 + 10 })
                 )
                 .setActive(true)
                 .setVisible(true)
             } else {
               sprites.killAndHide(sprite)
             }
+          })
+          autorun(() => {
+            sprite.setX(
+              (order.location?.boundingRectangle.x ||
+                order.from.location?.boundingRectangle.x ||
+                -800) +
+                sprite.width * 2
+            )
+            sprite.setY(
+              (order.location?.boundingRectangle.y ||
+                order.from.location?.boundingRectangle.y ||
+                -800) +
+                sprite.height / 2
+            )
           })
         }
       })

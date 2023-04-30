@@ -11,6 +11,7 @@ Made with Phaser 3.60 for [Gamedev.js Jam 2023](https://itch.io/jam/gamedevjs-20
 - [Open Pixels](http://silveiraneto.net/2011/08/20/getting-openpixels/) by Silveira Neito, [CC BY SA-4.0](http://silveiraneto.net/2011/08/20/getting-openpixels/)
 - [Characters, Zombies, and Weapons, Oh My!](https://opengameart.org/content/characters-zombies-and-weapons-oh-my) by Curt, [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
 - [RPG Item Set](https://opengameart.org/node/4531) by Jetrel, [CC0 1.0](http://creativecommons.org/publicdomain/zero/1.0/)
+- [16x16 Food](https://opengameart.org/content/16x16-food) by ARoachIFoundOnMyPillow, [CC0 1.0](http://creativecommons.org/publicdomain/zero/1.0/)
 
 ### Sounds
 

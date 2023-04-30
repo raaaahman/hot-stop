@@ -127,10 +127,11 @@ export default class RootStore {
     const order = this.orders.findById(orderId)
 
     if (
-      building &&
-      order &&
-      building.available &&
-      order.type === building.task.type
+      (building &&
+        order &&
+        order.type === building.task.type &&
+        building.available) ||
+      (order && order.type === 'serve' && building?.task.type === 'serve')
     ) {
       const events = this.timeline.events.splice(
         this.timeline.events.findIndex((event) => event.target === order.from),
@@ -144,7 +145,7 @@ export default class RootStore {
         in: building.task.duration,
         target: building,
         run: () => {
-          if (order.type === 'cook') {
+          if (order.type === 'serve') {
             order.from.onSatisfied(
               'serve',
               events[0].time - this.timeline.elapsed
@@ -152,29 +153,27 @@ export default class RootStore {
           }
 
           if (
-            order.from?.location?.task &&
-            'order' in order.from.location.task &&
-            order.from.location.task.order
+            order.location?.task &&
+            'order' in order.location.task &&
+            order.location.task.order
           ) {
-            this.orders.create(order.from.location.task.order.type, order.from)
+            this.orders.create(
+              order.location.task.order.type,
+              order.from
+            ).location = building
           }
 
           if (
-            order.from?.location?.task &&
-            'reward' in order.from.location.task &&
-            order.from.location.task.reward
+            order.location?.task &&
+            'reward' in order.location.task &&
+            order.location.task.reward
           ) {
             this.inventory.add({
-              money:
-                order.from.location.task.reward.money * order.from.satisfaction,
+              money: order.location.task.reward.money * order.from.satisfaction,
             })
           }
 
-          if (
-            order.type === order.from.location?.task.type ||
-            (order.type === 'cook' &&
-              order.from.location?.task.type === 'serve')
-          ) {
+          if (order.type === order.from.location?.task.type) {
             order.from.location?.onComplete()
           }
 

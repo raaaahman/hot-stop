@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import Character from '../character/Character'
 import Building from '../building/Building'
 
-export type OrderType = 'cook' | 'clean'
+export type OrderType = 'cook' | 'clean' | 'serve'
 
 export default class Order {
   public location?: Building

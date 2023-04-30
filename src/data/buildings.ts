@@ -10,7 +10,7 @@ export default [
       { type: 'place', duration: 1200, order: { type: 'cook' } },
       {
         type: 'serve',
-        duration: 2400,
+        duration: 3600,
         order: { type: 'clean' },
         reward: { money: 25 },
       },
@@ -22,7 +22,7 @@ export default [
   },
   {
     type: 'kitchen-stall',
-    tasks: [{ type: 'cook', duration: 4800 }],
+    tasks: [{ type: 'cook', duration: 4800, order: { type: 'serve' } }],
   },
   {
     type: 'kitchen-sink',

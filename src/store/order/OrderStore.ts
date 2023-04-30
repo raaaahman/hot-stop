@@ -38,6 +38,7 @@ export default class OrderStore {
     const order = this._orders.find((order) => order.id === orderID)
     if (order) {
       order.active = false
+      order.location = undefined
     }
   }
 }
