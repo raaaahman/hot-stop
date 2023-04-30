@@ -50,11 +50,13 @@ describe('The Building domain object', () => {
 
   describe('the assign method', () => {
     let character: Character,
+      order: Order,
       buildingWithChore: Building,
       buildingWithService: Building
 
     beforeEach(() => {
       character = new Character(1)
+      order = new Order(1, 'order', character)
       buildingWithService = new Building(
         'table1',
         'table',
@@ -89,6 +91,18 @@ describe('The Building domain object', () => {
       expect(character.location).not.toBe(buildingWithChore)
     })
 
+    it("should set the argument's Order location to the current Building, if the building's current task is a chore", () => {
+      buildingWithChore.assign(order)
+
+      expect(order.location).toBe(buildingWithChore)
+    })
+
+    it("should not set the argument's Order location to the current Building, if the building's current task is a service", () => {
+      buildingWithService.assign(order)
+
+      expect(order.location).not.toBe(buildingWithService)
+    })
+
     it("should set the building as unavailable if the building's current task is a service and the assignee is a Character", () => {
       buildingWithService.assign(character)
 
@@ -102,7 +116,7 @@ describe('The Building domain object', () => {
     })
 
     it("should set the building as unavailable if the building's current task is a chore and the assignee is an Order", () => {
-      buildingWithChore.assign(new Order(1, 'order', character))
+      buildingWithChore.assign(order)
 
       expect(buildingWithChore.available).toBe(false)
     })

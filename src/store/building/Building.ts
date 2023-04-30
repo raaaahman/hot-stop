@@ -56,10 +56,11 @@ export default class Building {
   }
 
   assign(assignee: Character | Order) {
-    if (assignee instanceof Character && isBuildingService(this.task)) {
+    if (
+      (assignee instanceof Character && isBuildingService(this.task)) ||
+      (assignee instanceof Order && isBuildingChore(this.task))
+    ) {
       assignee.location = this
-      this._available = false
-    } else if (assignee instanceof Order && isBuildingChore(this.task)) {
       this._available = false
     }
   }
