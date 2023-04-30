@@ -101,7 +101,7 @@ export default class GameScene extends Scene {
       ) => {
         const characterIdMatch = gameObject.name.match(/character-(\d+)/)
         if (characterIdMatch) {
-          store.assign(dropZone.name, Number(characterIdMatch[1]))
+          store.assignCharacter(dropZone.name, Number(characterIdMatch[1]))
         }
       }
     )

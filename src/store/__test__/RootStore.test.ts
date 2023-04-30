@@ -35,20 +35,20 @@ describe('The RootStore', () => {
 
   describe('the assign method', () => {
     it('should set the new location of the character to the building with the given name', () => {
-      store.assign('kitchen', character.id)
+      store.assignCharacter('table1', character.id)
 
-      const kitchen = store.buildings.find(
-        (building) => building.name === 'kitchen'
+      const building = store.buildings.find(
+        (building) => building.name === 'table1'
       )
 
-      expect(character.location).toBe(kitchen)
+      expect(character.location).toBe(building)
     })
 
     it('should make building with the assigned character unavailable', () => {
-      store.assign('kitchen', character.id)
+      store.assignCharacter('table1', character.id)
 
       expect(store.buildings).toContainEqual(
-        expect.objectContaining({ name: 'kitchen', available: false })
+        expect.objectContaining({ name: 'table1', available: false })
       )
     })
 
@@ -58,7 +58,7 @@ describe('The RootStore', () => {
       }
       store.timeline.add(previousEvent)
 
-      store.assign('kitchen', character.id)
+      store.assignCharacter('kitchen', character.id)
 
       expect(store.timeline.events).not.toEqual(
         expect.arrayContaining([previousEvent])
@@ -67,7 +67,7 @@ describe('The RootStore', () => {
 
     it('should add an event to the timeline', () => {
       vi.spyOn(store.timeline, 'add')
-      store.assign('kitchen', character.id)
+      store.assignCharacter('kitchen', character.id)
 
       expect(store.timeline.add).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -146,7 +146,7 @@ describe('The RootStore', () => {
     )
 
     function runEvent(building: Building, character: Character) {
-      store.assign(building.name, character.id)
+      store.assignCharacter(building.name, character.id)
       const event = store.timeline.events.find(
         (event) => event.target === building
       )

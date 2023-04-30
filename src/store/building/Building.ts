@@ -1,8 +1,14 @@
 import { action, computed, makeObservable } from 'mobx'
 
 import { BuildingType } from './BuildingSchema'
-import { BuildingChore, BuildingService } from './types'
+import {
+  BuildingChore,
+  BuildingService,
+  isBuildingChore,
+  isBuildingService,
+} from './types'
 import Character from '../character/Character'
+import Order from '../order/Order'
 
 export default class Building {
   private _currentTask = 0
@@ -49,9 +55,13 @@ export default class Building {
     return this._available
   }
 
-  assign(character: Character) {
-    character.location = this
-    this._available = false
+  assign(assignee: Character | Order) {
+    if (assignee instanceof Character && isBuildingService(this.task)) {
+      assignee.location = this
+      this._available = false
+    } else if (assignee instanceof Order && isBuildingChore(this.task)) {
+      this._available = false
+    }
   }
 
   onComplete() {

@@ -48,25 +48,56 @@ describe('The Building domain object', () => {
   })
 
   describe('the assign method', () => {
-    let character: Character, building: Building
+    let character: Character,
+      buildingWithChore: Building,
+      buildingWithService: Building
 
     beforeEach(() => {
       character = new Character(1)
-      building = new Building('kitchen', 'kitchen', 256, 32, 160, 128, true, [
-        { type: 'order', duration: 3600 },
-      ])
+      buildingWithService = new Building(
+        'table1',
+        'table',
+        256,
+        128,
+        160,
+        96,
+        true,
+        [{ type: 'place', duration: 1200 }]
+      )
+      buildingWithChore = new Building(
+        'kitchen',
+        'kitchen',
+        256,
+        32,
+        160,
+        128,
+        true,
+        [{ type: 'order', duration: 3600 }]
+      )
     })
 
-    it("should set the argument's Character location to the current Building", () => {
-      building.assign(character)
+    it("should set the argument's Character location to the current Building, if the building's current task is a service", () => {
+      buildingWithService.assign(character)
 
-      expect(character.location).toBe(building)
+      expect(character.location).toBe(buildingWithService)
     })
 
-    it('should set the building as unavailable', () => {
-      building.assign(character)
+    it("should not set the argument's Character location to the current Building, if the building's current task is a chore", () => {
+      buildingWithChore.assign(character)
 
-      expect(building._available).toBe(false)
+      expect(character.location).not.toBe(buildingWithChore)
+    })
+
+    it("should set the building as unavailable if the building's current task is a service and the assignee is a Character", () => {
+      buildingWithService.assign(character)
+
+      expect(buildingWithChore.available).toBe(false)
+    })
+
+    it("should not set the building as unavailable if the building's current task is a chore and the assignee is a character", () => {
+      buildingWithChore.assign(character)
+
+      expect(buildingWithChore.available).toBe(true)
     })
   })
 

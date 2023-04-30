@@ -59,14 +59,12 @@ export default class RootStore {
     this.timeline.add(events)
   }
 
-  assign(buildingName: string, characterId: number) {
+  assignCharacter(buildingName: string, characterId: number) {
     const building = this.buildings.find(
       (building) => building.name === buildingName
     )
 
-    const character = this.characters.find(
-      (character) => characterId === character.id
-    )
+    const character = this.characters.findById(characterId)
 
     if (character && building && building.available && building.task) {
       building.assign(character)
