@@ -9,3 +9,12 @@ export const SPRITE_ITEMS = {
   NOTE: 'item-note',
   PLATE: 'item-plate',
 }
+export const MUSIC = {
+  MAIN_THEME: 'welcome-to-the-item-shop',
+}
+export const SOUNDS = {
+  SELECT: 'select',
+  LEAVE: 'leave',
+  MONEY: 'money',
+  ASSIGN: 'assign',
+}

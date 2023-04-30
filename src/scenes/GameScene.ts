@@ -4,6 +4,8 @@ import { Chance } from 'chance'
 
 import {
   MAP_ROAD_360,
+  MUSIC,
+  SOUNDS,
   SPRITE_CHARACTER,
   SPRITE_ITEMS,
   TILEMAP_ROAD_360,
@@ -27,6 +29,14 @@ export default class GameScene extends Scene {
     )
     this.load.image(SPRITE_ITEMS.NOTE, 'assets/img/note.png')
     this.load.image(SPRITE_ITEMS.PLATE, 'assets/img/plate.png')
+    this.load.audio(
+      MUSIC.MAIN_THEME,
+      'assets/audio/welcome_to_the_item_shop.ogg'
+    )
+    this.load.audio(SOUNDS.SELECT, 'assets/audio/001_Hover_01.wav')
+    this.load.audio(SOUNDS.LEAVE, 'assets/audio/071_Unequip_01.wav')
+    this.load.audio(SOUNDS.MONEY, 'assets/audio/079_Buy_sell_01.wav')
+    this.load.audio(SOUNDS.ASSIGN, 'assets/audio/092_Pause_04.wav')
     this.load.json(TILEMAP_ROAD_360, 'assets/levels/road_360.json')
   }
 
@@ -80,10 +90,12 @@ export default class GameScene extends Scene {
         const characterIdMatch = gameObject.name.match(/character-(\d+)/)
         if (characterIdMatch) {
           store.assignCharacter(dropZone.name, Number(characterIdMatch[1]))
+          this.sound.play(SOUNDS.ASSIGN)
         }
         const orderIdMatch = gameObject.name.match(/order-(\d+)/)
         if (orderIdMatch) {
           store.assignOrder(dropZone.name, Number(orderIdMatch[1]))
+          this.sound.play(SOUNDS.ASSIGN)
         }
         console.log(characterIdMatch, orderIdMatch)
       }
@@ -125,6 +137,7 @@ export default class GameScene extends Scene {
                     Number(characterIdMatch[1])
                   )
                   store.characters.selected = character
+                  this.sound.play(SOUNDS.SELECT)
                 }
                 event.stopPropagation()
               }
@@ -253,8 +266,13 @@ export default class GameScene extends Scene {
 
     autorun(() => {
       moneyText.text = `Money: ${Math.floor(store.inventory.money)}$`
+      // skip sounds at initialization
+      if (store.inventory.money > 0) {
+        this.sound.play(SOUNDS.MONEY)
+      }
     })
 
     store.timeline.play()
+    this.sound.play(MUSIC.MAIN_THEME)
   }
 }

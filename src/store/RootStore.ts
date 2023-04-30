@@ -7,6 +7,7 @@ import { Chance } from 'chance'
 import CharacterStore from './character/CharacterStore'
 import { isBuildingService } from './building/types'
 import OrderStore from './order/OrderStore'
+import { SOUNDS } from '../resources'
 
 export default class RootStore {
   public timeline: Phaser.Time.Timeline
@@ -32,8 +33,10 @@ export default class RootStore {
   public init() {
     const chance = Chance()
     const events = []
-    for (let i = 0; i < chance.integer({ min: 24, max: 32 }); i++) {
-      const spawnTime = i * 12000 + chance.integer({ min: -12, max: 12 }) * 500
+    const customersNb = chance.integer({ min: 12, max: 16 })
+    for (let i = 0; i < customersNb; i++) {
+      const spawnTime =
+        i * (120000 / customersNb) + chance.integer({ min: -8, max: 8 }) * 500
       const building = this.buildings.filter(
         (building: Building) => building.type === 'car'
       )[chance.integer({ min: 0, max: 2 })]
@@ -56,6 +59,7 @@ export default class RootStore {
         set: {
           isActive: false,
         },
+        sound: SOUNDS.LEAVE,
       })
     }
     this.timeline.add(events)
@@ -83,6 +87,7 @@ export default class RootStore {
         set: {
           isActive: false,
         },
+        sound: SOUNDS.LEAVE,
       })
 
       this.timeline.add({
