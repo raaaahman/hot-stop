@@ -73,7 +73,6 @@ export default class GameScene extends Scene {
         .setName(building.name)
 
       autorun(() => {
-        console.log(building.name, 'available: ', building.available)
         if (building.available) {
           zone.setAlpha(0.01)
         } else {
@@ -146,7 +145,6 @@ export default class GameScene extends Scene {
             )
 
           autorun(() => {
-            console.log(character.id, character.name, character.location?.name)
             sprite.setX(
               (character.location?.boundingRectangle.x || -800) +
                 sprite.width / 2
@@ -198,7 +196,6 @@ export default class GameScene extends Scene {
             )
 
           autorun(() => {
-            console.log(order.id, order.type, order.location?.name)
             sprite.setX(
               (order.location?.boundingRectangle.x || -800) + sprite.width * 2
             )
@@ -208,7 +205,6 @@ export default class GameScene extends Scene {
           })
 
           autorun(() => {
-            console.log(order.id, order.type, order.from.name)
             if (order.active) {
               sprite
                 .setTexture(
@@ -286,6 +282,38 @@ export default class GameScene extends Scene {
         this.sound.play(SOUNDS.MONEY)
       }
     })
+
+    const credits = this.add
+      .text(
+        40,
+        576,
+        `Graphics
+
+Silveira Neito
+Curt
+Jetrel
+ARoachIFoundOnMYPillow
+
+Sounds
+
+congusbongus
+SubspaceAudio
+
+Programming
+
+raaaahman`,
+        { color: '#222' }
+      )
+      .setVisible(false)
+    this.add
+      .text(40, 884, 'Credits', { color: '#fff', fontStyle: 'bold' })
+      .setInteractive()
+      .on(Phaser.Input.Events.POINTER_OVER, () => {
+        credits.setVisible(true)
+      })
+      .on(Phaser.Input.Events.POINTER_OUT, () => {
+        credits.setVisible(false)
+      })
 
     store.timeline.play()
     this.sound.play(MUSIC.MAIN_THEME)

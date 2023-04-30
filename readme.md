@@ -1,8 +1,8 @@
-# Dead'n'Breakfast
+# Hot Stop
 
-Scavenge, cook, serve and fight the zombie horde in this time management game HTML5 game.
+Greet, cook, serve and serve your customers in this time management game.
 
-Made with Phaser 3.60 for [Gamedev.js Jam 2023](https://itch.io/jam/gamedevjs-2023).
+Made with Phaser 3.60 for ~~[Gamedev.js Jam 2023](https://itch.io/jam/gamedevjs-2023)~~ 
 
 ## Resources
 
